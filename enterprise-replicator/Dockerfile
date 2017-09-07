@@ -30,17 +30,4 @@ LABEL io.confluent.docker.git.id=$COMMIT_ID
 ARG BUILD_NUMBER=-1
 LABEL io.confluent.docker.build.number=$BUILD_NUMBER
 
-# Default kafka-connect rest.port
-EXPOSE 8083
-
-RUN echo "===> Setting up ${ARTIFACT_ID} dirs ..." \
-    && mkdir -p /etc/${ARTIFACT_ID} /etc/${ARTIFACT_ID}/secrets /etc/${ARTIFACT_ID}/jars \
-    && chmod -R ag+w /etc/${ARTIFACT_ID} /etc/${ARTIFACT_ID}/secrets /etc/${ARTIFACT_ID}/jars
-
 ADD target/${ARTIFACT_ID}-${CONNECT_VERSION}-package/share/java/${ARTIFACT_ID}/* /usr/share/java/${ARTIFACT_ID}/
-
-VOLUME ["/etc/${ARTIFACT_ID}/jars", "/etc/${ARTIFACT_ID}/secrets"]
-
-COPY include/etc/confluent/docker /etc/confluent/docker
-
-CMD ["/etc/confluent/docker/run"]
