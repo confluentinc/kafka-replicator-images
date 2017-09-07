@@ -15,9 +15,12 @@
 
 # Builds a docker image for Kafka Connect
 
+ARG DOCKER_REGISTRY
 ARG CONNECT_VERSION
 
-FROM confluentinc/cp-base:${CONNECT_VERSION}
+# TODO: Get master branch cp-base images published, and use as a base.
+# FROM ${DOCKER_REGISTRY}confluentinc/cp-base:master-latest
+FROM ${DOCKER_REGISTRY}confluentinc/cp-base:latest
 
 ARG CONNECT_VERSION
 ARG ARTIFACT_ID
