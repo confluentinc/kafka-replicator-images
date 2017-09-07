@@ -31,11 +31,11 @@
     <name>Kafka Connect All-In-One</name>
 
     <dependencies>
-		<dependency>
-  		    <groupId>io.confluent</groupId>
-  		    <artifactId>cp-kafka-connect-base</artifactId>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>cp-kafka-connect-base</artifactId>
             <version>${project.version}</version>
-		</dependency>
+        </dependency>
 
         <dependency>
             <groupId>io.confluent</groupId>
@@ -46,12 +46,6 @@
         <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-connect-jdbc</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.confluent</groupId>
-            <artifactId>kafka-connect-replicator</artifactId>
             <version>${project.version}</version>
         </dependency>
 

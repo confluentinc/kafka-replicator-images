@@ -31,11 +31,11 @@
     <name>Kafka Connect Enterprise Replicator</name>
 
     <dependencies>
-		<dependency>
-  		    <groupId>io.confluent</groupId>
-  		    <artifactId>cp-kafka-connect-base</artifactId>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>cp-kafka-connect-base</artifactId>
             <version>${project.version}</version>
-		</dependency>
+        </dependency>
 
         <dependency>
             <groupId>io.confluent</groupId>
