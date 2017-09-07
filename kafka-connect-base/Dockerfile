@@ -21,6 +21,7 @@ ARG DOCKER_REGISTRY
 # FROM ${DOCKER_REGISTRY}confluentinc/cp-base:master-latest
 FROM ${DOCKER_REGISTRY}confluentinc/cp-base:latest
 
+ARG COMPONENT
 ARG CONNECT_VERSION
 ARG ARTIFACT_ID
 
@@ -35,10 +36,10 @@ LABEL io.confluent.docker.build.number=$BUILD_NUMBER
 EXPOSE 8083
 
 RUN echo "===> Setting up ${ARTIFACT_ID} dirs ..." \
-    && mkdir -p /etc/${ARTIFACT_ID} /etc/${ARTIFACT_ID}/secrets /etc/${ARTIFACT_ID}/jars \
-    && chmod -R ag+w /etc/${ARTIFACT_ID} /etc/${ARTIFACT_ID}/secrets /etc/${ARTIFACT_ID}/jars
+    && mkdir -p /etc/${COMPONENT} /etc/${COMPONENT}/secrets /etc/${COMPONENT}/jars \
+    && chmod -R ag+w /etc/${COMPONENT} /etc/${COMPONENT}/secrets /etc/${COMPONENT}/jars
 
-ADD target/${ARTIFACT_ID}-${CONNECT_VERSION}-package/share/java/${ARTIFACT_ID}/* /usr/share/java/${ARTIFACT_ID}/
+ADD target/${ARTIFACT_ID}-${CONNECT_VERSION}-package/share/java/${ARTIFACT_ID}/* /usr/share/java/${COMPONENT}/
 
 VOLUME ["/etc/${ARTIFACT_ID}/jars", "/etc/${ARTIFACT_ID}/secrets"]
 

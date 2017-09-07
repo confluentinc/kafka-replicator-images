@@ -218,6 +218,7 @@
                         <configuration>
                             <buildArgs>
                                 <ARTIFACT_ID>${project.artifactId}</ARTIFACT_ID>
+                                <COMPONENT>kafka-connect</COMPONENT>
                                 <CONNECT_VERSION>${project.version}</CONNECT_VERSION>
                                 <DOCKER_REGISTRY>${docker.registry}</DOCKER_REGISTRY>
                                 <DOCKER_TAG>${docker.tag}</DOCKER_TAG>
