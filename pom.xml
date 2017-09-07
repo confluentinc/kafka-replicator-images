@@ -220,6 +220,7 @@
                                 <ARTIFACT_ID>${project.artifactId}</ARTIFACT_ID>
                                 <CONNECT_VERSION>${project.version}</CONNECT_VERSION>
                                 <DOCKER_REGISTRY>${docker.registry}</DOCKER_REGISTRY>
+                                <DOCKER_TAG>${docker.tag}</DOCKER_TAG>
                             </buildArgs>
                             <skip>${docker.skipBuild}</skip>
                             <tag>${docker.tag}</tag>

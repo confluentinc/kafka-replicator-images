@@ -16,9 +16,9 @@
 # Builds a docker image for Kafka Connect
 
 ARG DOCKER_REGISTRY
-ARG CONNECT_VERSION
+ARG DOCKER_TAG
 
-FROM ${DOCKER_REGISTRY}confluentinc/cp-kafka-connect-base:${CONNECT_VERSION}
+FROM ${DOCKER_REGISTRY}confluentinc/cp-kafka-connect-base:${DOCKER_TAG}
 
 ARG CONNECT_VERSION
 ARG ARTIFACT_ID
