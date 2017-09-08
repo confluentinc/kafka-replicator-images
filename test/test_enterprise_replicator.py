@@ -42,19 +42,12 @@ CONSUME_DATA = """bash -c "\
         """
 
 
-def create_connector(name, create_command, host, port):
-
-    utils.run_docker_command(
-        image="confluentinc/cp-kafka-connect",
-        command=create_command,
-        host_config={'NetworkMode': 'host'})
+def create_connector(cluster, service, name, create_command, host, port):
+    cluster.run_command_on_service(service, create_command)
 
     status = None
     for i in xrange(25):
-        source_logs = utils.run_docker_command(
-            image="confluentinc/cp-kafka-connect",
-            command=CONNECTOR_STATUS.format(host=host, port=port, name=name),
-            host_config={'NetworkMode': 'host'})
+        source_logs = cluster.run_command_on_service(service, CONNECTOR_STATUS.format(host=host, port=port, name=name))
 
         connector = json.loads(source_logs)
         # Retry if you see errors, connect might still be creating the connector.
@@ -79,9 +72,9 @@ class ClusterHostNetworkTest(unittest.TestCase):
         cls.base_dir = "/tmp/replicator-host-cluster-test"
         cls.cluster = utils.TestCluster("replicator-test", FIXTURES_DIR, "cluster-host-plain.yml")
         cls.cluster.start()
-        assert "PASS" in cls.cluster.run_command_on_service("zookeeper-src-a", ZK_READY.format(servers="localhost:22181"))
-        assert "PASS" in cls.cluster.run_command_on_service("zookeeper-src-b", ZK_READY.format(servers="localhost:32181"))
-        assert "PASS" in cls.cluster.run_command_on_service("zookeeper-dest", ZK_READY.format(servers="localhost:42181"))
+        assert "PASS" in cls.cluster.run_command_on_service("zookeeper-src-a", ZK_READY.format(servers="zookeeper-src-a:22181"))
+        assert "PASS" in cls.cluster.run_command_on_service("zookeeper-src-b", ZK_READY.format(servers="zookeeper-src-b:32181"))
+        assert "PASS" in cls.cluster.run_command_on_service("zookeeper-dest", ZK_READY.format(servers="zookeeper-dest:42181"))
         assert "PASS" in cls.cluster.run_command_on_service("kafka-1-src-a", KAFKA_READY.format(brokers=2))
         assert "PASS" in cls.cluster.run_command_on_service("kafka-1-src-b", KAFKA_READY.format(brokers=2))
         assert "PASS" in cls.cluster.run_command_on_service("kafka-1-dest", KAFKA_READY.format(brokers=2))
@@ -98,7 +91,7 @@ class ClusterHostNetworkTest(unittest.TestCase):
 
     @classmethod
     def is_connect_healthy_for_service(cls, service, port):
-        assert "PASS" in cls.cluster.run_command_on_service(service, CONNECT_HEALTH_CHECK.format(host="localhost", port=port))
+        assert "PASS" in cls.cluster.run_command_on_service(service, CONNECT_HEALTH_CHECK.format(host=service, port=port))
 
     def test_replicator(self):
 
@@ -114,19 +107,19 @@ class ClusterHostNetworkTest(unittest.TestCase):
         self.is_connect_healthy_for_service("connect-host-1", 28082)
         self.is_connect_healthy_for_service("connect-host-2", 38082)
 
-        assert "PASS" in self.cluster.run_command_on_service("kafka-1-src-a", PRODUCE_DATA.format(messages=1000, brokers="localhost:9092", topic="foo"))
-        assert "PASS" in self.cluster.run_command_on_service("kafka-1-src-b", PRODUCE_DATA.format(messages=1000, brokers="localhost:9082", topic="bar"))
+        assert "PASS" in self.cluster.run_command_on_service("kafka-1-src-a", PRODUCE_DATA.format(messages=1000, brokers="kafka-1-src-a:9092", topic="foo"))
+        assert "PASS" in self.cluster.run_command_on_service("kafka-1-src-b", PRODUCE_DATA.format(messages=1000, brokers="kafka-1-src-b:9082", topic="bar"))
 
-        src_a_replicator_cmd = REPLICATOR_CREATE % ("cluster-a", "localhost:22181", "localhost:9092", "localhost:42181", "foo", "localhost", "28082")
-        src_a_replicator = create_connector("cluster-a", src_a_replicator_cmd, "localhost", "28082")
+        src_a_replicator_cmd = REPLICATOR_CREATE % ("cluster-a", "zookeeper-src-a:22181", "kafka-1-src-a:9092", "zookeeper-dest:42181", "foo", "connect-host-1", "28082")
+        src_a_replicator = create_connector(self.cluster, "connect-host-1", "cluster-a", src_a_replicator_cmd, "connect-host-1", "28082")
         self.assertEquals(src_a_replicator, "RUNNING")
 
-        src_b_replicator_cmd = REPLICATOR_CREATE % ("cluster-b", "localhost:32181", "localhost:9082", "localhost:42181", "bar", "localhost", "28082")
-        src_b_replicator = create_connector("cluster-b", src_b_replicator_cmd, "localhost", "28082")
+        src_b_replicator_cmd = REPLICATOR_CREATE % ("cluster-b", "zookeeper-src-b:32181", "kafka-1-src-b:9082", "zookeeper-dest:42181", "bar", "connect-host-1", "28082")
+        src_b_replicator = create_connector(self.cluster, "connect-host-1", "cluster-b", src_b_replicator_cmd, "connect-host-1", "28082")
         self.assertEquals(src_b_replicator, "RUNNING")
 
-        foo_consumer_logs = self.cluster.run_command_on_service("kafka-1-src-a", CONSUME_DATA.format(messages=1000, brokers="localhost:9072", topic="foo.replica"))
+        foo_consumer_logs = self.cluster.run_command_on_service("kafka-1-src-a", CONSUME_DATA.format(messages=1000, brokers="kafka-1-dest:9072", topic="foo.replica"))
         self.assertTrue("Processed a total of 1000 messages" in foo_consumer_logs)
 
-        bar_consumer_logs = self.cluster.run_command_on_service("kafka-1-src-b", CONSUME_DATA.format(messages=1000, brokers="localhost:9072", topic="bar.replica"))
+        bar_consumer_logs = self.cluster.run_command_on_service("kafka-1-src-b", CONSUME_DATA.format(messages=1000, brokers="kafka-1-dest:9072", topic="bar.replica"))
         self.assertTrue("Processed a total of 1000 messages" in bar_consumer_logs)
