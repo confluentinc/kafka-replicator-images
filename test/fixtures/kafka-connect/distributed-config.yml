@@ -236,5 +236,5 @@ services:
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
       CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
       CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_REST_ADVERTISED_HOST_NAME: "default-config"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "default-config-avro"
       CONNECT_ZOOKEEPER_CONNECT: "zookeeper:2181/defaultconfig"
