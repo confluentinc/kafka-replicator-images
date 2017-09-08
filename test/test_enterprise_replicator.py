@@ -83,7 +83,7 @@ class ClusterHostNetworkTest(unittest.TestCase):
         assert "PASS" in cls.cluster.run_command_on_service("zookeeper-src-b", ZK_READY.format(servers="localhost:32181"))
         assert "PASS" in cls.cluster.run_command_on_service("zookeeper-dest", ZK_READY.format(servers="localhost:42181"))
         assert "PASS" in cls.cluster.run_command_on_service("kafka-1-src-a", KAFKA_READY.format(brokers=2))
-        assert "PASS" in cls.cluster.run_command_on_service("kafka-1-src-a", KAFKA_READY.format(brokers=2))
+        assert "PASS" in cls.cluster.run_command_on_service("kafka-1-src-b", KAFKA_READY.format(brokers=2))
         assert "PASS" in cls.cluster.run_command_on_service("kafka-1-dest", KAFKA_READY.format(brokers=2))
 
     @classmethod
