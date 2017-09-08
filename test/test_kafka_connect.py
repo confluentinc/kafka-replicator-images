@@ -53,6 +53,8 @@ class ConfigTest(unittest.TestCase):
         cls.cluster = utils.TestCluster("config-test", FIXTURES_DIR, "distributed-config.yml")
         cls.cluster.start()
 
+        time.sleep(15)
+
         assert "PASS" in cls.cluster.run_command_on_service("zookeeper", ZK_READY.format(servers="zookeeper:2181"))
         assert "PASS" in cls.cluster.run_command_on_service("kafka", KAFKA_READY.format(brokers=1))
         assert "PASS" in cls.cluster.run_command_on_service("schema-registry", SR_READY.format(host="schema-registry", port="8081"))
@@ -198,24 +200,22 @@ class SingleNodeDistributedTest(unittest.TestCase):
 
         cls.machine.ssh("sudo mkdir -p /tmp/kafka-connect-single-node-test/jars")
         local_jars_dir = os.path.join(FIXTURES_DIR, "jars")
-        # cls.machine.ssh("cp -rf %s /tmp/kafka-connect-single-node-test" % local_jars_dir)
         cls.machine.scp_to_machine(local_jars_dir, "/tmp/kafka-connect-single-node-test")
 
         cls.machine.ssh("sudo mkdir -p /tmp/kafka-connect-single-node-test/sql")
         local_sql_dir = os.path.join(FIXTURES_DIR, "sql")
-        # cls.machine.ssh("cp -rf %s /tmp/kafka-connect-single-node-test" % local_sql_dir)
         cls.machine.scp_to_machine(local_sql_dir, "/tmp/kafka-connect-single-node-test")
 
         cls.machine.ssh("sudo mkdir -p /tmp/kafka-connect-single-node-test/scripts")
         local_scripts_dir = os.path.join(FIXTURES_DIR, "scripts")
-        # cls.machine.ssh("cp -rf % /tmp/kafka-connect-single-node-test" % local_scripts_dir)
         cls.machine.scp_to_machine(local_scripts_dir, "/tmp/kafka-connect-single-node-test")
 
         cls.cluster = utils.TestCluster("distributed-single-node", FIXTURES_DIR, "distributed-single-node.yml")
         cls.cluster.start()
-        # assert "PASS" in cls.cluster.run_command_on_service("zookeeper-bridge", ZK_READY.format(servers="localhost:2181"))
+
+	time.sleep(30)
+
         assert "PASS" in cls.cluster.run_command_on_service("zookeeper-host", ZK_READY.format(servers="zookeeper-host:32181"))
-        # assert "PASS" in cls.cluster.run_command_on_service("kafka-bridge", KAFKA_READY.format(brokers=1))
         assert "PASS" in cls.cluster.run_command_on_service("kafka-host", KAFKA_READY.format(brokers=1))
         assert "PASS" in cls.cluster.run_command_on_service("schema-registry-host", SR_READY.format(host="schema-registry-host", port="8081"))
 
@@ -465,10 +465,12 @@ class ClusterHostNetworkTest(unittest.TestCase):
         # Copy SSL files.
         cls.machine.ssh("sudo mkdir -p /tmp/kafka-connect-host-cluster-test/jars")
         local_jars_dir = os.path.join(FIXTURES_DIR, "jars")
-        # cls.machine.ssh("cp -rf %s /tmp/kafka-connect-host-cluster-test" % local_jars_dir)
         cls.machine.scp_to_machine(local_jars_dir, "/tmp/kafka-connect-host-cluster-test")
         cls.cluster = utils.TestCluster("cluster-test", FIXTURES_DIR, "cluster-host-plain.yml")
         cls.cluster.start()
+
+        time.sleep(15)
+
         assert "PASS" in cls.cluster.run_command_on_service("zookeeper-1", ZK_READY.format(servers="zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181"))
         assert "PASS" in cls.cluster.run_command_on_service("kafka-1", KAFKA_READY.format(brokers=3))
 
