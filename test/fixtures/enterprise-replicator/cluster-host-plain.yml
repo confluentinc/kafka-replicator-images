@@ -120,6 +120,8 @@ services:
     # This is a workaround for the invalid topic exception. If you allow auto-topic creation, sometimes
     # the worker fails with Invalid topic exception, restarting fixes the issue.
     restart: on-failure:3
+    ports:
+      - '28082:28082'
     environment:
       CONNECT_BOOTSTRAP_SERVERS: localhost:9072,localhost:9075
       CONNECT_REST_PORT: 28082
@@ -145,6 +147,8 @@ services:
     labels:
     - io.confluent.docker.testing=true
     restart: on-failure:3
+    ports:
+      - '38082:38082'
     environment:
       CONNECT_BOOTSTRAP_SERVERS: localhost:9072,localhost:9075
       CONNECT_REST_PORT: 38082

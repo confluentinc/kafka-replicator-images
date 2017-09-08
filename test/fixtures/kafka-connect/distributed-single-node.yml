@@ -3,8 +3,11 @@ version: '2'
 
 services:
   zookeeper-host:
+    hostname: zookeeper-host
     image: confluentinc/cp-zookeeper:latest
     network_mode: host
+    ports:
+      - '32181:32181'
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
@@ -12,8 +15,11 @@ services:
     - io.confluent.docker.testing=true
 
   kafka-host:
+    hostname: kafka-host
     image: confluentinc/cp-kafka:latest
     network_mode: host
+    ports:
+      - '29092:29092'
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -23,8 +29,11 @@ services:
     - io.confluent.docker.testing=true
 
   schema-registry-host:
+    hostname: schema-registry-host
     image: confluentinc/cp-schema-registry:latest
     network_mode: host
+    ports:
+      - '8081:8081'
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: localhost:32181
       SCHEMA_REGISTRY_HOST_NAME: localhost
@@ -32,6 +41,7 @@ services:
     - io.confluent.docker.testing=true
 
   mysql-host:
+    hostname: mysql-host
     image: mysql:5.7
     network_mode: host
     labels:
@@ -45,16 +55,20 @@ services:
     - /tmp/kafka-connect-single-node-test/sql:/tmp/sql
 
   elasticsearch-host:
+    hostname: elasticsearch-host
     image: elasticsearch:2.4
     network_mode: host
     labels:
     - io.confluent.docker.testing=true
 
   connect-host-json:
+    hostname: connect-host-json
     image: confluentinc/cp-kafka-connect:latest
     network_mode: host
     labels:
     - io.confluent.docker.testing=true
+    ports:
+      - '28082:28082'
     environment:
       CONNECT_BOOTSTRAP_SERVERS: localhost:29092
       CONNECT_REST_PORT: 28082
@@ -69,15 +83,21 @@ services:
       CONNECT_REST_ADVERTISED_HOST_NAME: "localhost"
       CONNECT_ZOOKEEPER_CONNECT: "localhost:32181"
       CONNECT_LOG4J_ROOT_LOGLEVEL: DEBUG
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
     volumes:
     - /tmp/kafka-connect-single-node-test/:/tmp/test
     - /tmp/kafka-connect-single-node-test/jars:/etc/kafka-connect/jars
 
   connect-host-avro:
+    hostname: connect-host-avro
     image: confluentinc/cp-kafka-connect:latest
     network_mode: host
     labels:
     - io.confluent.docker.testing=true
+    ports:
+      - '38082:38082'
     environment:
       CONNECT_BOOTSTRAP_SERVERS: localhost:29092
       CONNECT_REST_PORT: 38082
@@ -94,6 +114,9 @@ services:
       CONNECT_REST_ADVERTISED_HOST_NAME: "localhost"
       CONNECT_ZOOKEEPER_CONNECT: "localhost:32181"
       # CONNECT_LOG4J_ROOT_LOGLEVEL: DEBUG
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
     volumes:
     - /tmp/kafka-connect-single-node-test/:/tmp/test
     - /tmp/kafka-connect-single-node-test/jars:/etc/kafka-connect/jars
