@@ -29,6 +29,8 @@ services:
   schema-registry:
     hostname: schema-registry
     image: confluentinc/cp-schema-registry:latest
+    ports:
+      - '8081:8081'
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper:2181/defaultconfig
       SCHEMA_REGISTRY_HOST_NAME: schema-registry

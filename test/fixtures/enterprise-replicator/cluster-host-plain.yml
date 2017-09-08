@@ -2,7 +2,10 @@
 version: '2'
 services:
   zookeeper-src-a:
+    hostname: zookeeper-src-a
     image: confluentinc/cp-zookeeper:latest
+    ports:
+      - '22181:22181'
     environment:
       ZOOKEEPER_CLIENT_PORT: 22181
     network_mode: host
@@ -10,7 +13,10 @@ services:
     - io.confluent.docker.testing=true
 
   zookeeper-src-b:
+    hostname: zookeeper-src-b
     image: confluentinc/cp-zookeeper:latest
+    ports:
+      - '32181:32181'
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
     network_mode: host
@@ -18,7 +24,10 @@ services:
     - io.confluent.docker.testing=true
 
   zookeeper-dest:
+    hostname: zookeeper-dest
     image: confluentinc/cp-zookeeper:latest
+    ports:
+      - '42181:42181'
     environment:
       ZOOKEEPER_CLIENT_PORT: 42181
     network_mode: host
@@ -26,54 +35,78 @@ services:
     - io.confluent.docker.testing=true
 
   kafka-1-src-a:
+    hostname: kafka-1-src-a
     image: confluentinc/cp-kafka:latest
     network_mode: host
+    ports:
+      - '9092:9092'
     environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
       KAFKA_ZOOKEEPER_CONNECT: localhost:22181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
     labels:
     - io.confluent.docker.testing=true
 
   kafka-2-src-a:
+    hostname: kafka-2-src-a
     image: confluentinc/cp-kafka:latest
     network_mode: host
+    ports:
+      - '9095:9095'
     environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
       KAFKA_ZOOKEEPER_CONNECT: localhost:22181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9095
     labels:
     - io.confluent.docker.testing=true
 
   kafka-1-src-b:
+    hostname: kafka-1-src-b
     image: confluentinc/cp-kafka:latest
     network_mode: host
+    ports:
+      - '9082:9082'
     environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
       KAFKA_ZOOKEEPER_CONNECT: localhost:32181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9082
     labels:
     - io.confluent.docker.testing=true
 
   kafka-2-src-b:
+    hostname: kafka-2-src-b
     image: confluentinc/cp-kafka:latest
     network_mode: host
+    ports:
+      - '9085:9085'
     environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
       KAFKA_ZOOKEEPER_CONNECT: localhost:32181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9085
     labels:
     - io.confluent.docker.testing=true
 
   kafka-1-dest:
+    hostname: kafka-1-dest
     image: confluentinc/cp-kafka:latest
     network_mode: host
+    ports:
+      - '9072:9072'
     environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
       KAFKA_ZOOKEEPER_CONNECT: localhost:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9072
     labels:
     - io.confluent.docker.testing=true
 
   kafka-2-dest:
+    hostname: kafka-2-dest
     image: confluentinc/cp-kafka:latest
     network_mode: host
+    ports:
+      - '9075:9075'
     environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
       KAFKA_ZOOKEEPER_CONNECT: localhost:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9075
     labels:
@@ -100,6 +133,9 @@ services:
       CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
       CONNECT_REST_ADVERTISED_HOST_NAME: "localhost"
       # CONNECT_LOG4J_ROOT_LOGLEVEL: DEBUG
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 2
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 2
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 2
     volumes:
     - /tmp/replicator-host-cluster-test/:/tmp/test
 
@@ -122,5 +158,8 @@ services:
       CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
       CONNECT_REST_ADVERTISED_HOST_NAME: "localhost"
       # CONNECT_LOG4J_ROOT_LOGLEVEL: DEBUG
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 2
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 2
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 2
     volumes:
     - /tmp/replicator-host-cluster-test/:/tmp/test
