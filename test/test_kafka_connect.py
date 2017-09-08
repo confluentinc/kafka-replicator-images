@@ -9,7 +9,7 @@ import confluent.docker_utils as utils
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 FIXTURES_DIR = os.path.join(CURRENT_DIR, "fixtures", "kafka-connect")
 KAFKA_READY = "bash -c 'cub kafka-ready {brokers} 40 -z $KAFKA_ZOOKEEPER_CONNECT && echo PASS || echo FAIL'"
-CONNECT_HEALTH_CHECK = "bash -c 'dub wait {host} {port} 60 && curl -X GET --fail --silent {host}:{port}/connectors && echo PASS || echo FAIL'"
+CONNECT_HEALTH_CHECK = "bash -c 'dub wait {host} {port} 45 && curl -X GET --fail --silent {host}:{port}/connectors && echo PASS || echo FAIL'"
 ZK_READY = "bash -c 'cub zk-ready {servers} 40 && echo PASS || echo FAIL'"
 SR_READY = "bash -c 'cub sr-ready {host} {port} 20 && echo PASS || echo FAIL'"
 
@@ -495,10 +495,24 @@ class ClusterHostNetworkTest(unittest.TestCase):
         # Creating topics upfront makes the tests go a lot faster (I suspect this is because consumers dont waste time with rebalances)
         self.create_topics("kafka-1", "default", "cluster-host-file-test")
 
-        # Test from within the container
-        self.is_connect_healthy_for_service("connect-host-1", 28082)
-        self.is_connect_healthy_for_service("connect-host-2", 38082)
-        self.is_connect_healthy_for_service("connect-host-3", 48082)
+	is_healthy = False
+
+        # These can take some time to warm up
+        for i in range(5):
+            # Test from within the container
+            if not self.cluster.run_command_on_service("connect-host-1", CONNECT_HEALTH_CHECK.format(host="connect-host-1", port=28082)):
+               continue
+
+            if not self.cluster.run_command_on_service("connect-host-2", CONNECT_HEALTH_CHECK.format(host="connect-host-2", port=38082)):
+               continue
+
+            if not self.cluster.run_command_on_service("connect-host-3", CONNECT_HEALTH_CHECK.format(host="connect-host-3", port=48082)):
+               continue
+
+            is_healthy = True
+            break
+
+        self.assertTrue(is_healthy)
 
         # Create a file
         record_count = 10000
@@ -529,12 +543,12 @@ class ClusterHostNetworkTest(unittest.TestCase):
         record_count = 10000
         create_file_source_test_data(self.cluster, "connect-host-avro-1", "/tmp/connect-cluster-host-file-test", "source.avro.test.txt", record_count)
 
-        file_source_create_cmd = FILE_SOURCE_CONNECTOR_CREATE % ("cluster-host-source-test", "cluster-host-avro-file-test", "/tmp/test/source.avro.test.txt", "connect-host-1", "28083")
-        source_status = create_connector(self.cluster, "connect-host-avro-1", "cluster-host-source-test", file_source_create_cmd, "connect-host-1", "28083")
+        file_source_create_cmd = FILE_SOURCE_CONNECTOR_CREATE % ("cluster-host-source-test", "cluster-host-avro-file-test", "/tmp/test/source.avro.test.txt", "connect-host-avro-1", "28083")
+        source_status = create_connector(self.cluster, "connect-host-avro-1", "cluster-host-source-test", file_source_create_cmd, "connect-host-avro-1", "28083")
         self.assertEquals(source_status, "RUNNING")
 
-        file_sink_create_cmd = FILE_SINK_CONNECTOR_CREATE % ("cluster-host-sink-test", "cluster-host-avro-file-test", "/tmp/test/sink.avro.test.txt", "connect-host-2", "38083")
-        sink_status = create_connector(self.cluster, "connect-host-avro-2", "cluster-host-sink-test", file_sink_create_cmd, "connect-host-2", "38083")
+        file_sink_create_cmd = FILE_SINK_CONNECTOR_CREATE % ("cluster-host-sink-test", "cluster-host-avro-file-test", "/tmp/test/sink.avro.test.txt", "connect-host-avro-2", "38083")
+        sink_status = create_connector(self.cluster, "connect-host-avro-2", "cluster-host-sink-test", file_sink_create_cmd, "connect-host-avro-2", "38083")
         self.assertEquals(sink_status, "RUNNING")
 
         sink_op = wait_and_get_sink_output(self.cluster, "connect-host-avro-2", "/tmp/connect-cluster-host-file-test", "sink.avro.test.txt", record_count)
