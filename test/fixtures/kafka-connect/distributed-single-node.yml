@@ -11,37 +11,41 @@ services:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   kafka-host:
     hostname: kafka-host
     image: confluentinc/cp-kafka:latest
     ports:
       - '29092:29092'
+    depends_on:
+      - zookeeper-host
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-host:32181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-host:29092
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   schema-registry-host:
     hostname: schema-registry-host
     image: confluentinc/cp-schema-registry:latest
     ports:
       - '8081:8081'
+    depends_on:
+      - zookeeper-host
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper-host:32181
       SCHEMA_REGISTRY_HOST_NAME: schema-registry-host
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   mysql-host:
     hostname: mysql-host
     image: mysql:5.7
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
     environment:
       MYSQL_ROOT_PASSWORD: confluent
       MYSQL_USER: confluent
@@ -53,16 +57,21 @@ services:
   elasticsearch-host:
     hostname: elasticsearch-host
     image: elasticsearch:2.4
+    depends_on:
+      - kafka-host
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   connect-host-json:
     hostname: connect-host-json
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
     ports:
       - '28082:28082'
+    depends_on:
+      - kafka-host
+      - mysql-host
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka-host:29092
       CONNECT_REST_PORT: 28082
@@ -88,9 +97,13 @@ services:
     hostname: connect-host-avro
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
     ports:
       - '38082:38082'
+    depends_on:
+      - kafka-host
+      - mysql-host
+      - schema-registry-host
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka-host:29092
       CONNECT_REST_PORT: 38082

@@ -11,37 +11,43 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_CLIENT_PORT: 2181
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   kafka:
     hostname: kafka
     image: confluentinc/cp-kafka:latest
     ports:
       - '9092:9092'
+    depends_on:
+      - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181/defaultconfig
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   schema-registry:
     hostname: schema-registry
     image: confluentinc/cp-schema-registry:latest
     ports:
       - '8081:8081'
+    depends_on:
+      - zookeeper
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper:2181/defaultconfig
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   failing-config:
     hostname: failing-config
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
+    depends_on:
+      - kafka
     environment:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
@@ -51,7 +57,9 @@ services:
     hostname: failing-config-group-id
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
+    depends_on:
+      - kafka
     environment:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
@@ -63,7 +71,9 @@ services:
     hostname: failing-config-config-topic
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
+    depends_on:
+      - kafka
     environment:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
@@ -76,7 +86,9 @@ services:
     hostname: failing-config-offset-topic
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
+    depends_on:
+      - kafka
     environment:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
@@ -91,7 +103,9 @@ services:
     hostname: failing-config-status-topic
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
+    depends_on:
+      - kafka
     environment:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
@@ -107,7 +121,9 @@ services:
     hostname: failing-config-key-converter
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
+    depends_on:
+      - kafka
     environment:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
@@ -123,7 +139,9 @@ services:
     hostname: failing-config-value-converter
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
+    depends_on:
+      - kafka
     environment:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
@@ -140,7 +158,9 @@ services:
     hostname: failing-config-internal-key-converter
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
+    depends_on:
+      - kafka
     environment:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
@@ -158,7 +178,9 @@ services:
     hostname: failing-config-internal-value-converter
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
+    depends_on:
+      - kafka
     environment:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
@@ -177,7 +199,9 @@ services:
     hostname: failing-config-rest-adv-host-name
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
+    depends_on:
+      - kafka
     environment:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
@@ -197,7 +221,9 @@ services:
     hostname: default-config
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
+    depends_on:
+      - kafka
     environment:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
@@ -219,7 +245,9 @@ services:
     hostname: default-config-avro
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
+    depends_on:
+      - kafka
     environment:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1

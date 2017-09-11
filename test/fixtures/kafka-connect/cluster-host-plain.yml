@@ -14,7 +14,7 @@ services:
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-1:22888:23888;zookeeper-2:32888:33888;zookeeper-3:42888:43888
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   zookeeper-2:
     hostname: zookeeper-2
@@ -29,7 +29,7 @@ services:
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-1:22888:23888;zookeeper-2:32888:33888;zookeeper-3:42888:43888
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   zookeeper-3:
     hostname: zookeeper-3
@@ -44,54 +44,70 @@ services:
       ZOOKEEPER_SYNC_LIMIT: 2
       ZOOKEEPER_SERVERS: zookeeper-1:22888:23888;zookeeper-2:32888:33888;zookeeper-3:42888:43888
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   kafka-1:
     hostname: kafka-1
     image: confluentinc/cp-kafka:latest
     ports:
       - '29092:29092'
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:29092
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   kafka-2:
     hostname: kafka-2
     image: confluentinc/cp-kafka:latest
     ports:
       - '39092:39092'
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:39092
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   kafka-3:
     hostname: kafka-3
     image: confluentinc/cp-kafka:latest
     ports:
       - '49092:49092'
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
     environment:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:49092
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
 
   connect-host-1:
     hostname: connect-host-1
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
     # This is a workaround for the invalid topic exception. If you allow auto-topic creation, sometimes
     # the worker fails with Invalid topic exception, restarting fixes the issue.
     restart: on-failure:3
     ports:
       - '28082:28082'
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka-1:29092,kafka-2:39092,kafka-3:49092
       CONNECT_REST_PORT: 28082
@@ -113,10 +129,14 @@ services:
     hostname: connect-host-2
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
     restart: on-failure:3
     ports:
       - '38082:38082'
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka-1:29092,kafka-2:39092,kafka-3:49092
       CONNECT_REST_PORT: 38082
@@ -138,10 +158,14 @@ services:
     hostname: connect-host-3
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
     restart: on-failure:3
     ports:
       - '48082:48082'
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka-1:29092,kafka-2:39092,kafka-3:49092
       CONNECT_REST_PORT: 48082
@@ -163,10 +187,14 @@ services:
     hostname: connect-host-avro-1
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
     restart: on-failure:3
     ports:
       - '28083:28083'
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka-1:29092,kafka-2:39092,kafka-3:49092
       CONNECT_REST_PORT: 28083
@@ -188,10 +216,14 @@ services:
     hostname: connect-host-avro-2
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
     restart: on-failure:3
     ports:
       - '38083:38083'
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka-1:29092,kafka-2:39092,kafka-3:49092
       CONNECT_REST_PORT: 38083
@@ -213,10 +245,14 @@ services:
     hostname: connect-host-avro-3
     image: confluentinc/cp-kafka-connect:latest
     labels:
-    - io.confluent.docker.testing=true
+      - io.confluent.docker.testing=true
     restart: on-failure:3
     ports:
       - '48083:48083'
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka-1:29092,kafka-2:39092,kafka-3:49092
       CONNECT_REST_PORT: 48083
