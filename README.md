@@ -16,6 +16,8 @@ To build SNAPSHOT images, configure `.m2/settings.xml` for SNAPSHOT dependencies
 
 Pushing images is currently handled via `docker push`, and is not part of the build.
 
+`tox` is required for testing.
+
 ```
 mvn clean package  # Build local images
 
