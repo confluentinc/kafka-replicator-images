@@ -1,8 +1,9 @@
+import json
 import os
 import unittest
 import time
 import string
-import json
+import subprocess
 
 import confluent.docker_utils as utils
 
@@ -43,6 +44,15 @@ ES_SINK_CONNECTOR_CREATE = """
 """
 
 CONNECTOR_STATUS = "curl -s -X GET http://{host}:{port}/connectors/{name}/status"
+
+MYSQL_DRIVER_VERSION = "5.1.39"
+
+MYSQL_ARCHIVE_NAME = "mysql-connector-java-{0}.tar.gz".format(MYSQL_DRIVER_VERSION)
+MYSQL_JAR_NAME = "mysql-connector-java-{0}-bin.jar".format(MYSQL_DRIVER_VERSION)
+
+DOWNLOAD_MYSQL_CONNECTOR = """
+    mkdir -p {0}/jars && curl -k -SL https://dev.mysql.com/get/Downloads/Connector-J/{1} | tar -xzf - -C {0}/jars --strip-components=1 mysql-connector-java-{2}/{3}
+    """.format(FIXTURES_DIR, MYSQL_ARCHIVE_NAME, MYSQL_DRIVER_VERSION, MYSQL_JAR_NAME)
 
 
 class ConfigTest(unittest.TestCase):
@@ -147,7 +157,7 @@ def create_connector(cluster, service, name, create_command, host, port):
     cluster.run_command_on_service(service, create_command)
 
     status = None
-    for i in xrange(25):
+    for i in xrange(40):
         source_logs = cluster.run_command_on_service(service, CONNECTOR_STATUS.format(host=host, port=port, name=name))
 
         connector = json.loads(source_logs)
@@ -200,6 +210,11 @@ class SingleNodeDistributedTest(unittest.TestCase):
 
         cls.machine.ssh("sudo mkdir -p /tmp/kafka-connect-single-node-test/jars")
         local_jars_dir = os.path.join(FIXTURES_DIR, "jars")
+
+        # Download MySQL connector JAR
+        if not os.path.exists(os.path.join(FIXTURES_DIR, "jars", MYSQL_JAR_NAME)):
+            assert subprocess.check_call(DOWNLOAD_MYSQL_CONNECTOR, shell=True, stderr=subprocess.STDOUT) == 0
+
         cls.machine.scp_to_machine(local_jars_dir, "/tmp/kafka-connect-single-node-test")
 
         cls.machine.ssh("sudo mkdir -p /tmp/kafka-connect-single-node-test/sql")
@@ -408,7 +423,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
         assert "PASS" in self.cluster.run_command_on_service("mysql-host", """ bash -c "mysql --user=root --password=confluent --silent -e 'show databases;' | grep connect_test && echo PASS || echo FAIL" """)
 
         tmp = ""
-        for i in xrange(25):
+        for i in xrange(40):
             if "PASS" in self.cluster.run_command_on_service("mysql-host", """ bash -c "mysql --user=root --password=confluent --silent --database=connect_test -e 'show tables;' | grep %s && echo PASS || echo FAIL" """ % topic):
                 tmp = self.cluster.run_command_on_service("mysql-host", """ bash -c "mysql --user=root --password=confluent --silent --database=connect_test -e 'select COUNT(*) FROM %s ;' " """ % topic)
                 if "10000" in tmp:
@@ -443,7 +458,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
         self.assertEquals(es_sink_status, "RUNNING")
 
         tmp = ""
-        for i in xrange(25):
+        for i in xrange(40):
             index_exists_cmd = 'bash -c "curl -s -f -XHEAD http://localhost:9200/%s && echo PASS || echo FAIL"' % topic
             if "PASS" in self.cluster.run_command_on_service("elasticsearch-host", index_exists_cmd):
                 doc_count = """ bash -c "curl -s -f http://localhost:9200/_cat/count/%s | cut -d' ' -f3" """ % topic
@@ -497,7 +512,7 @@ class ClusterHostNetworkTest(unittest.TestCase):
         # Creating topics upfront makes the tests go a lot faster (I suspect this is because consumers dont waste time with rebalances)
         self.create_topics("kafka-1", "default", "cluster-host-file-test")
 
-	is_healthy = False
+        is_healthy = False
 
         # These can take some time to warm up
         for i in range(5):
