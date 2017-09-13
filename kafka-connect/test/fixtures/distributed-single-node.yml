@@ -4,7 +4,7 @@ version: '2'
 services:
   zookeeper-host:
     hostname: zookeeper-host
-    image: confluentinc/cp-zookeeper:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_TAG}"
     ports:
       - '32181:32181'
     environment:
@@ -15,7 +15,7 @@ services:
 
   kafka-host:
     hostname: kafka-host
-    image: confluentinc/cp-kafka:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka:${DOCKER_TAG}"
     ports:
       - '29092:29092'
     depends_on:
@@ -30,7 +30,7 @@ services:
 
   schema-registry-host:
     hostname: schema-registry-host
-    image: confluentinc/cp-schema-registry:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-schema-registry:${DOCKER_TAG}"
     ports:
       - '8081:8081'
     depends_on:
@@ -64,7 +64,7 @@ services:
 
   connect-host-json:
     hostname: connect-host-json
-    image: confluentinc/cp-kafka-connect:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka-connect:${DOCKER_TAG}"
     labels:
       - io.confluent.docker.testing=true
     ports:
@@ -95,7 +95,7 @@ services:
 
   connect-host-avro:
     hostname: connect-host-avro
-    image: confluentinc/cp-kafka-connect:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka-connect:${DOCKER_TAG}"
     labels:
       - io.confluent.docker.testing=true
     ports:

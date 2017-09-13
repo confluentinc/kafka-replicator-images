@@ -3,7 +3,7 @@ version: '2'
 services:
   zookeeper-1:
     hostname: zookeeper-1
-    image: confluentinc/cp-zookeeper:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_TAG}"
     ports:
       - '22181:22181'
     environment:
@@ -18,7 +18,7 @@ services:
 
   zookeeper-2:
     hostname: zookeeper-2
-    image: confluentinc/cp-zookeeper:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_TAG}"
     ports:
       - '32181:32181'
     environment:
@@ -33,7 +33,7 @@ services:
 
   zookeeper-3:
     hostname: zookeeper-3
-    image: confluentinc/cp-zookeeper:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_TAG}"
     ports:
       - '42181:42181'
     environment:
@@ -48,7 +48,7 @@ services:
 
   kafka-1:
     hostname: kafka-1
-    image: confluentinc/cp-kafka:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka:${DOCKER_TAG}"
     ports:
       - '29092:29092'
     depends_on:
@@ -64,7 +64,7 @@ services:
 
   kafka-2:
     hostname: kafka-2
-    image: confluentinc/cp-kafka:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka:${DOCKER_TAG}"
     ports:
       - '39092:39092'
     depends_on:
@@ -80,7 +80,7 @@ services:
 
   kafka-3:
     hostname: kafka-3
-    image: confluentinc/cp-kafka:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka:${DOCKER_TAG}"
     ports:
       - '49092:49092'
     depends_on:
@@ -96,7 +96,7 @@ services:
 
   connect-host-1:
     hostname: connect-host-1
-    image: confluentinc/cp-kafka-connect:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka-connect:${DOCKER_TAG}"
     labels:
       - io.confluent.docker.testing=true
     # This is a workaround for the invalid topic exception. If you allow auto-topic creation, sometimes
@@ -127,7 +127,7 @@ services:
 
   connect-host-2:
     hostname: connect-host-2
-    image: confluentinc/cp-kafka-connect:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka-connect:${DOCKER_TAG}"
     labels:
       - io.confluent.docker.testing=true
     restart: on-failure:3
@@ -156,7 +156,7 @@ services:
 
   connect-host-3:
     hostname: connect-host-3
-    image: confluentinc/cp-kafka-connect:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka-connect:${DOCKER_TAG}"
     labels:
       - io.confluent.docker.testing=true
     restart: on-failure:3
@@ -185,7 +185,7 @@ services:
 
   connect-host-avro-1:
     hostname: connect-host-avro-1
-    image: confluentinc/cp-kafka-connect:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka-connect:${DOCKER_TAG}"
     labels:
       - io.confluent.docker.testing=true
     restart: on-failure:3
@@ -214,7 +214,7 @@ services:
 
   connect-host-avro-2:
     hostname: connect-host-avro-2
-    image: confluentinc/cp-kafka-connect:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka-connect:${DOCKER_TAG}"
     labels:
       - io.confluent.docker.testing=true
     restart: on-failure:3
@@ -243,7 +243,7 @@ services:
 
   connect-host-avro-3:
     hostname: connect-host-avro-3
-    image: confluentinc/cp-kafka-connect:latest
+    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka-connect:${DOCKER_TAG}"
     labels:
       - io.confluent.docker.testing=true
     restart: on-failure:3

@@ -7,13 +7,13 @@ import setuptools
 remote_requirements = '\n'.join(str(r.req) for r in parse_requirements("requirements.txt", session='dummy') if r.req)
 
 setuptools.setup(
-    name='kafka-connect-images-tests',
+    name='enterprise-replicator-tests',
     version='0.0.1',
 
     author="Confluent, Inc.",
     author_email="partner-support@confluent.io",
 
-    description='Tests for kafka-connect-images',
+    description='Docker image tests',
 
     url="https://github.com/confluentinc/kafka-connect-images",
 

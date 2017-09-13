@@ -32,6 +32,7 @@
 
     <properties>
         <docker.skipBuild>false</docker.skipBuild>
+        <docker.skipTest>false</docker.skipTest>
     </properties>
 
     <dependencies>

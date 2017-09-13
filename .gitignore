@@ -21,3 +21,7 @@ java/.classpath
 java/.project
 java/.settings/
 .vscode/*
+*.egg-info/
+.eggs/*
+*swp
+.tox
