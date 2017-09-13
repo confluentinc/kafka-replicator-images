@@ -35,6 +35,7 @@
     </pluginRepositories>
 
     <properties>
+        <component.name>kafka-connect</component.name>
         <docker.registry></docker.registry>
         <docker.skipBuild>true</docker.skipBuild>
         <docker.skipTest>true</docker.skipTest>
@@ -197,9 +198,10 @@
                         <configuration>
                             <skip>${docker.skipTest}</skip>
                             <environmentVariables>
+                                <COMPONENT>${component.name}</COMPONENT>
                                 <DOCKER_REGISTRY>${docker.registry}</DOCKER_REGISTRY>
                                 <DOCKER_TAG>${docker.tag}</DOCKER_TAG>
-                                <TOX_TESTENV_PASSENV>DOCKER_REGISTRY DOCKER_TAG</TOX_TESTENV_PASSENV>
+                                <TOX_TESTENV_PASSENV>COMPONENT DOCKER_REGISTRY DOCKER_TAG</TOX_TESTENV_PASSENV>
                             </environmentVariables>
                             <executable>tox</executable>
                         </configuration>
@@ -236,7 +238,7 @@
                         <configuration>
                             <buildArgs>
                                 <ARTIFACT_ID>${project.artifactId}</ARTIFACT_ID>
-                                <COMPONENT>kafka-connect</COMPONENT>
+                                <COMPONENT>${component.name}</COMPONENT>
                                 <CONNECT_VERSION>${project.version}</CONNECT_VERSION>
                                 <DOCKER_REGISTRY>${docker.registry}</DOCKER_REGISTRY>
                                 <DOCKER_TAG>${docker.tag}</DOCKER_TAG>
