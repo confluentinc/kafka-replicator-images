@@ -16,11 +16,17 @@ To build SNAPSHOT images, configure `.m2/settings.xml` for SNAPSHOT dependencies
 
 Pushing images is currently handled via `docker push`, and is not part of the build.
 
-`tox` is required for testing.
-
 ```
 mvn clean package  # Build local images
 
 # Build images for a private registry; trailing '/' is required:
-# mvn package -Ddocker.registry=docker.example.com:8080/ -Ddocker.tag=$VERSION-$BUILD_NUMBER
+# mvn clean package -Ddocker.registry=docker.example.com:8080/ -Ddocker.tag=$VERSION-$BUILD_NUMBER
+```
+
+## Testing
+
+Python 2.7 and `tox` are required for running tests.
+
+```
+mvn clean integration-test  # Build local images, and run Python integration tests
 ```

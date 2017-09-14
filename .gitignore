@@ -22,6 +22,6 @@ java/.project
 java/.settings/
 .vscode/*
 *.egg-info/
-.eggs/*
+.eggs/
 *swp
 .tox

@@ -206,9 +206,9 @@ class SingleNodeDistributedTest(unittest.TestCase):
         machine_name = "tester"
         cls.machine = utils.TestMachine(machine_name)
 
-        cls.machine.ssh("sudo mkdir -p /tmp/kafka-connect-single-node-test")
+        cls.machine.ssh("mkdir -p /tmp/kafka-connect-single-node-test")
 
-        cls.machine.ssh("sudo mkdir -p /tmp/kafka-connect-single-node-test/jars")
+        cls.machine.ssh("mkdir -p /tmp/kafka-connect-single-node-test/jars")
         local_jars_dir = os.path.join(FIXTURES_DIR, "jars")
 
         # Download MySQL connector JAR
@@ -217,11 +217,11 @@ class SingleNodeDistributedTest(unittest.TestCase):
 
         cls.machine.scp_to_machine(local_jars_dir, "/tmp/kafka-connect-single-node-test")
 
-        cls.machine.ssh("sudo mkdir -p /tmp/kafka-connect-single-node-test/sql")
+        cls.machine.ssh("mkdir -p /tmp/kafka-connect-single-node-test/sql")
         local_sql_dir = os.path.join(FIXTURES_DIR, "sql")
         cls.machine.scp_to_machine(local_sql_dir, "/tmp/kafka-connect-single-node-test")
 
-        cls.machine.ssh("sudo mkdir -p /tmp/kafka-connect-single-node-test/scripts")
+        cls.machine.ssh("mkdir -p /tmp/kafka-connect-single-node-test/scripts")
         local_scripts_dir = os.path.join(FIXTURES_DIR, "scripts")
         cls.machine.scp_to_machine(local_scripts_dir, "/tmp/kafka-connect-single-node-test")
 
@@ -236,7 +236,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.machine.ssh("sudo rm -rf /tmp/kafka-connect-single-node-test")
+        cls.machine.ssh("rm -rf /tmp/kafka-connect-single-node-test")
         cls.cluster.shutdown()
 
     @classmethod
@@ -478,7 +478,7 @@ class ClusterHostNetworkTest(unittest.TestCase):
         cls.machine = utils.TestMachine(machine_name)
 
         # Copy SSL files.
-        cls.machine.ssh("sudo mkdir -p /tmp/kafka-connect-host-cluster-test/jars")
+        cls.machine.ssh("mkdir -p /tmp/kafka-connect-host-cluster-test/jars")
         local_jars_dir = os.path.join(FIXTURES_DIR, "jars")
         cls.machine.scp_to_machine(local_jars_dir, "/tmp/kafka-connect-host-cluster-test")
         cls.cluster = utils.TestCluster("cluster-test", FIXTURES_DIR, "cluster-host-plain.yml")
@@ -491,7 +491,7 @@ class ClusterHostNetworkTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.machine.ssh("sudo rm -rf /tmp/kafka-connect-host-cluster-test")
+        cls.machine.ssh("rm -rf /tmp/kafka-connect-host-cluster-test")
         cls.cluster.shutdown()
 
     def create_topics(self, kafka_service, internal_topic_prefix, data_topic):
