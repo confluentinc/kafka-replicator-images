@@ -16,14 +16,17 @@
 # Builds a docker image for Kafka Connect
 
 ARG DOCKER_REGISTRY
+ARG DOCKER_TAG
 
-# TODO: Get master branch cp-base images published, and use as a base.
-# FROM ${DOCKER_REGISTRY}confluentinc/cp-base:master-latest
-FROM ${DOCKER_REGISTRY}confluentinc/cp-base:latest
+# TODO: Get master branch images published, and use as a base.
+# FROM ${DOCKER_REGISTRY}confluentinc/cp-kafka:master-latest
+FROM ${DOCKER_REGISTRY}confluentinc/cp-kafka:${DOCKER_TAG}
 
-ARG COMPONENT
 ARG CONNECT_VERSION
 ARG ARTIFACT_ID
+
+# Hard-code component to override parent (ARG is ineffective)
+ENV COMPONENT=kafka-connect
 
 MAINTAINER partner-support@confluent.io
 LABEL io.confluent.docker=true
@@ -39,9 +42,10 @@ RUN echo "===> Setting up ${ARTIFACT_ID} dirs ..." \
     && mkdir -p /etc/${COMPONENT} /etc/${COMPONENT}/secrets /etc/${COMPONENT}/jars \
     && chmod -R ag+w /etc/${COMPONENT} /etc/${COMPONENT}/secrets /etc/${COMPONENT}/jars
 
-ADD target/${ARTIFACT_ID}-${CONNECT_VERSION}-package/share/java/${ARTIFACT_ID}/* /usr/share/java/${COMPONENT}/
+# Install under "kafka-connect-images" to match CLASSPATH pattern used by connect startup scripts
+ADD target/${ARTIFACT_ID}-${CONNECT_VERSION}-package/share/java/${ARTIFACT_ID}/* /usr/share/java/kafka-connect-images/
 
-VOLUME ["/etc/${ARTIFACT_ID}/jars", "/etc/${ARTIFACT_ID}/secrets"]
+VOLUME ["/etc/${COMPONENT}/jars", "/etc/${COMPONENT}/secrets"]
 
 COPY include/etc/confluent/docker /etc/confluent/docker
 

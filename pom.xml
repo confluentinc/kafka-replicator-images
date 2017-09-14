@@ -145,9 +145,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptors>
-                        <descriptor>src/assembly/development.xml</descriptor>
                         <descriptor>src/assembly/package.xml</descriptor>
-                        <descriptor>src/assembly/standalone.xml</descriptor>
                     </descriptors>
                     <archive>
                         <manifest>
@@ -201,8 +199,7 @@
                         <configuration>
                             <skip>${docker.skipTest}</skip>
                             <environmentVariables>
-                                <TOX_TESTENV_PASSENV>COMPONENT DOCKER_REGISTRY DOCKER_TAG</TOX_TESTENV_PASSENV>
-                                <COMPONENT>${component.name}</COMPONENT>
+                                <TOX_TESTENV_PASSENV>DOCKER_REGISTRY DOCKER_TAG</TOX_TESTENV_PASSENV>
                                 <DOCKER_REGISTRY>${docker.registry}</DOCKER_REGISTRY>
                                 <DOCKER_TAG>${docker.tag}</DOCKER_TAG>
                             </environmentVariables>
@@ -241,7 +238,6 @@
                         <configuration>
                             <buildArgs>
                                 <ARTIFACT_ID>${project.artifactId}</ARTIFACT_ID>
-                                <COMPONENT>${component.name}</COMPONENT>
                                 <CONNECT_VERSION>${project.version}</CONNECT_VERSION>
                                 <DOCKER_REGISTRY>${docker.registry}</DOCKER_REGISTRY>
                                 <DOCKER_TAG>${docker.tag}</DOCKER_TAG>
