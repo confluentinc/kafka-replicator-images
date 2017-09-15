@@ -63,7 +63,7 @@ class ConfigTest(unittest.TestCase):
         cls.cluster = utils.TestCluster("config-test", FIXTURES_DIR, "distributed-config.yml")
         cls.cluster.start()
 
-        time.sleep(15)
+        time.sleep(30)
 
         assert "PASS" in cls.cluster.run_command_on_service("zookeeper", ZK_READY.format(servers="zookeeper:2181"))
         assert "PASS" in cls.cluster.run_command_on_service("kafka", KAFKA_READY.format(brokers=1))
@@ -163,7 +163,7 @@ def create_connector(cluster, service, name, create_command, host, port):
         connector = json.loads(source_logs)
         # Retry if you see errors, connect might still be creating the connector.
         if "error_code" in connector:
-            time.sleep(1)
+            time.sleep(2.5)
         else:
             status = connector["connector"]["state"]
             if status == "FAILED":
@@ -171,7 +171,7 @@ def create_connector(cluster, service, name, create_command, host, port):
             elif status == "RUNNING":
                 return status
             elif status == "UNASSIGNED":
-                time.sleep(1)
+                time.sleep(2.5)
 
     return status
 
@@ -194,7 +194,7 @@ def wait_and_get_sink_output(cluster, service, host_dir, file, expected_num_reco
         # The bash command returns -1, if the file is not found. otherwise it returns the no of lines in the file.
         if int(sink_record_count.strip()) == expected_num_records:
             break
-        time.sleep(10)
+        time.sleep(15)
 
     return int(sink_record_count.strip())
 
@@ -228,7 +228,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
         cls.cluster = utils.TestCluster("distributed-single-node", FIXTURES_DIR, "distributed-single-node.yml")
         cls.cluster.start()
 
-	time.sleep(30)
+	time.sleep(45)
 
         assert "PASS" in cls.cluster.run_command_on_service("zookeeper-host", ZK_READY.format(servers="zookeeper-host:32181"))
         assert "PASS" in cls.cluster.run_command_on_service("kafka-host", KAFKA_READY.format(brokers=1))
@@ -429,7 +429,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
                 if "10000" in tmp:
                     break
 
-            time.sleep(1.0)
+            time.sleep(2.5)
 
         assert "10000" in tmp
 
@@ -466,7 +466,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
                 if "10000" in tmp:
                     break
 
-            time.sleep(1.0)
+            time.sleep(2.5)
 
         assert "10000" in tmp
 
@@ -484,7 +484,7 @@ class ClusterHostNetworkTest(unittest.TestCase):
         cls.cluster = utils.TestCluster("cluster-test", FIXTURES_DIR, "cluster-host-plain.yml")
         cls.cluster.start()
 
-        time.sleep(15)
+        time.sleep(30)
 
         assert "PASS" in cls.cluster.run_command_on_service("zookeeper-1", ZK_READY.format(servers="zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181"))
         assert "PASS" in cls.cluster.run_command_on_service("kafka-1", KAFKA_READY.format(brokers=3))

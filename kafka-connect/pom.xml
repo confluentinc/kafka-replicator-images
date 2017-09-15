@@ -44,6 +44,12 @@
 
         <dependency>
             <groupId>io.confluent</groupId>
+            <artifactId>kafka-connect-elasticsearch</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.confluent</groupId>
             <artifactId>kafka-connect-hdfs</artifactId>
             <version>${project.version}</version>
         </dependency>

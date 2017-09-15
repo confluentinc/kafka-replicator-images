@@ -8,6 +8,7 @@ We also provide an image for [Enterprise Replicator](https://hub.docker.com/r/co
 
 See [docs](docs/) for tutorials. For more on how to use Confluent's Docker images, see the [cp-docker-images documentation](http://docs.confluent.io/current/cp-docker-images/docs/index.html).
 
+
 ## Building
 
 This project uses the `dockerfile-maven` plugin to build Docker images via Maven.
@@ -28,5 +29,5 @@ mvn clean package  # Build local images
 Python 2.7 and `tox` are required for running tests.
 
 ```
-mvn clean integration-test  # Build local images, and run Python integration tests
+mvn clean integration-test -Ddocker.tag=$YOUR_TAG  # Build local images, and run Python integration tests
 ```
