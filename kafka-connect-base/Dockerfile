@@ -28,6 +28,9 @@ ARG ARTIFACT_ID
 # Hard-code component to override parent (ARG is ineffective)
 ENV COMPONENT=kafka-connect
 
+# Hard-code classpath for avro console scripts to pick up
+ENV CLASSPATH=/usr/share/java/kafka-connect-images/*:/usr/share/java/kafka/*
+
 MAINTAINER partner-support@confluent.io
 LABEL io.confluent.docker=true
 ARG COMMIT_ID=unknown
@@ -44,6 +47,8 @@ RUN echo "===> Setting up ${ARTIFACT_ID} dirs ..." \
 
 # Install under "kafka-connect-images" to match CLASSPATH pattern used by connect startup scripts
 ADD target/${ARTIFACT_ID}-${CONNECT_VERSION}-package/share/java/${ARTIFACT_ID}/* /usr/share/java/kafka-connect-images/
+
+ADD target/dependency/avro-console-scripts-${CONNECT_VERSION}/* /usr/bin/
 
 VOLUME ["/etc/${COMPONENT}/jars", "/etc/${COMPONENT}/secrets"]
 
