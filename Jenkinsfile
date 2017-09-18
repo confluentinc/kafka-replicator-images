@@ -6,4 +6,6 @@ docker_oraclejdk8 {
     dockerRepos = ['confluentinc/cp-kafka-connect-base', 'confluentinc/cp-kafka-connect', 'confluentinc/cp-enterprise-replicator']
     dockerUpstreamRegistry = 'docker.io/'  // Temporary; use public images until new base images for trunk are published
     dockerUpstreamTag = 'latest'  // Temporary; use trunk-latest when available
+    mvnPhase = 'package'
+    mvnSkipDeploy = true
 }
