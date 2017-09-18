@@ -3,7 +3,7 @@ version: '2'
 services:
   zookeeper-1:
     hostname: zookeeper-1
-    image: "${DOCKER_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_TAG}"
+    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
     ports:
       - '22181:22181'
     environment:
@@ -18,7 +18,7 @@ services:
 
   zookeeper-2:
     hostname: zookeeper-2
-    image: "${DOCKER_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_TAG}"
+    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
     ports:
       - '32181:32181'
     environment:
@@ -33,7 +33,7 @@ services:
 
   zookeeper-3:
     hostname: zookeeper-3
-    image: "${DOCKER_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_TAG}"
+    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
     ports:
       - '42181:42181'
     environment:
@@ -48,7 +48,7 @@ services:
 
   kafka-1:
     hostname: kafka-1
-    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka:${DOCKER_TAG}"
+    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
     ports:
       - '29092:29092'
     depends_on:
@@ -64,7 +64,7 @@ services:
 
   kafka-2:
     hostname: kafka-2
-    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka:${DOCKER_TAG}"
+    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
     ports:
       - '39092:39092'
     depends_on:
@@ -80,7 +80,7 @@ services:
 
   kafka-3:
     hostname: kafka-3
-    image: "${DOCKER_REGISTRY}confluentinc/cp-kafka:${DOCKER_TAG}"
+    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
     ports:
       - '49092:49092'
     depends_on:

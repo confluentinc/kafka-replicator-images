@@ -31,8 +31,8 @@
     <name>Kafka Connect All-In-One</name>
 
     <properties>
-        <docker.skipBuild>false</docker.skipBuild>
-        <docker.skipTest>false</docker.skipTest>
+        <docker.skip-build>false</docker.skip-build>
+        <docker.skip-test>false</docker.skip-test>
     </properties>
 
     <dependencies>
