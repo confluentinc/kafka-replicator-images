@@ -199,9 +199,6 @@ def get_task_workers(cluster, service, name, host, port):
         tasks = connector["tasks"]
 
         for task in tasks:
-            if task["state"] != "RUNNING":
-                continue
-
             worker_ids.append(task["worker_id"])
 
         if worker_ids:
@@ -593,11 +590,11 @@ class ClusterHostNetworkTest(unittest.TestCase):
         source_status = create_connector(self.cluster, "connect-host-avro-1", "cluster-host-source-test", file_source_create_cmd, "connect-host-avro-1", "28083")
         self.assertEquals(source_status, "RUNNING")
 
-        file_sink_create_cmd = FILE_SINK_CONNECTOR_CREATE % ("cluster-host-sink-test", "cluster-host-avro-file-test", "/tmp/test/sink.avro.test.txt", "connect-host-avro-2", "38083")
-        sink_status = create_connector(self.cluster, "connect-host-avro-2", "cluster-host-sink-test", file_sink_create_cmd, "connect-host-avro-2", "38083")
+        file_sink_create_cmd = FILE_SINK_CONNECTOR_CREATE % ("cluster-host-sink-test-avro", "cluster-host-avro-file-test", "/tmp/test/sink.avro.test.txt", "connect-host-avro-2", "38083")
+        sink_status = create_connector(self.cluster, "connect-host-avro-2", "cluster-host-sink-test-avro", file_sink_create_cmd, "connect-host-avro-2", "38083")
         self.assertEquals(sink_status, "RUNNING")
 
-        task_worker, _ = get_task_workers(self.cluster, "connect-host-avro-2", "cluster-host-sink-test", "connect-host-avro-2", 38083)[0].split(":")
+        task_worker, _ = get_task_workers(self.cluster, "connect-host-avro-2", "cluster-host-sink-test-avro", "connect-host-avro-2", 38083)[0].split(":")
 
         sink_op = wait_and_get_sink_output(self.cluster, task_worker, "sink.avro.test.txt", record_count)
         self.assertEquals(sink_op, record_count)
