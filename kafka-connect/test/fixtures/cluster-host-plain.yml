@@ -122,8 +122,6 @@ services:
       CONNECT_REST_ADVERTISED_HOST_NAME: "connect-host-1"
       CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
       # CONNECT_LOG4J_ROOT_LOGLEVEL: DEBUG
-    volumes:
-    - /tmp/connect-cluster-host-file-test/:/tmp/test
 
   connect-host-2:
     hostname: connect-host-2
@@ -151,8 +149,6 @@ services:
       CONNECT_REST_ADVERTISED_HOST_NAME: "connect-host-2"
       CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
       # CONNECT_LOG4J_ROOT_LOGLEVEL: DEBUG
-    volumes:
-    - /tmp/connect-cluster-host-file-test/:/tmp/test
 
   connect-host-3:
     hostname: connect-host-3
@@ -180,8 +176,6 @@ services:
       CONNECT_REST_ADVERTISED_HOST_NAME: "connect-host-3"
       CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
       # CONNECT_LOG4J_ROOT_LOGLEVEL: DEBUG
-    volumes:
-    - /tmp/connect-cluster-host-file-test/:/tmp/test
 
   connect-host-avro-1:
     hostname: connect-host-avro-1
@@ -209,8 +203,6 @@ services:
       CONNECT_REST_ADVERTISED_HOST_NAME: "connect-host-avro-1"
       CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
       # CONNECT_LOG4J_ROOT_LOGLEVEL: DEBUG
-    volumes:
-    - /tmp/connect-cluster-host-file-test/:/tmp/test
 
   connect-host-avro-2:
     hostname: connect-host-avro-2
@@ -238,8 +230,6 @@ services:
       CONNECT_REST_ADVERTISED_HOST_NAME: "connect-host-avro-2"
       CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
       # CONNECT_LOG4J_ROOT_LOGLEVEL: DEBUG
-    volumes:
-    - /tmp/connect-cluster-host-file-test/:/tmp/test
 
   connect-host-avro-3:
     hostname: connect-host-avro-3
@@ -267,5 +257,3 @@ services:
       CONNECT_REST_ADVERTISED_HOST_NAME: "connect-host-avro-3"
       CONNECT_ZOOKEEPER_CONNECT: zookeeper-1:22181,zookeeper-2:32181,zookeeper-3:42181
       # CONNECT_LOG4J_ROOT_LOGLEVEL: DEBUG
-    volumes:
-    - /tmp/connect-cluster-host-file-test/:/tmp/test

@@ -51,8 +51,6 @@ services:
       MYSQL_USER: confluent
       MYSQL_PASSWORD: confluent
       MYSQL_DATABASE: connect_test
-    volumes:
-    - /tmp/kafka-connect-single-node-test/sql:/tmp/sql
 
   elasticsearch-host:
     hostname: elasticsearch-host
@@ -89,9 +87,6 @@ services:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
-    volumes:
-    - /tmp/kafka-connect-single-node-test/:/tmp/test
-    - /tmp/kafka-connect-single-node-test/jars:/etc/kafka-connect/jars
 
   connect-host-avro:
     hostname: connect-host-avro
@@ -123,6 +118,3 @@ services:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
-    volumes:
-    - /tmp/kafka-connect-single-node-test/:/tmp/test
-    - /tmp/kafka-connect-single-node-test/jars:/etc/kafka-connect/jars

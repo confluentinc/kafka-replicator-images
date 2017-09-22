@@ -7,6 +7,9 @@ import subprocess
 
 import confluent.docker_utils as utils
 
+os.environ["COMPOSE_HTTP_TIMEOUT"] = "240"
+
+
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 FIXTURES_DIR = os.path.join(CURRENT_DIR, "fixtures")
 KAFKA_READY = "bash -c 'cub kafka-ready {brokers} 40 -z $KAFKA_ZOOKEEPER_CONNECT && echo PASS || echo FAIL'"
@@ -50,9 +53,16 @@ MYSQL_DRIVER_VERSION = "5.1.39"
 MYSQL_ARCHIVE_NAME = "mysql-connector-java-{0}.tar.gz".format(MYSQL_DRIVER_VERSION)
 MYSQL_JAR_NAME = "mysql-connector-java-{0}-bin.jar".format(MYSQL_DRIVER_VERSION)
 
+LOCAL_JARS_DIR = os.path.join(FIXTURES_DIR, "jars")
+
 DOWNLOAD_MYSQL_CONNECTOR = """
-    mkdir -p {0}/jars && curl -k -SL https://dev.mysql.com/get/Downloads/Connector-J/{1} | tar -xzf - -C {0}/jars --strip-components=1 mysql-connector-java-{2}/{3}
-    """.format(FIXTURES_DIR, MYSQL_ARCHIVE_NAME, MYSQL_DRIVER_VERSION, MYSQL_JAR_NAME)
+    mkdir -p {0} && curl -k -SL https://dev.mysql.com/get/Downloads/Connector-J/{1} | tar -xzf - -C {0} --strip-components=1 mysql-connector-java-{2}/{3}
+    """.format(LOCAL_JARS_DIR, MYSQL_ARCHIVE_NAME, MYSQL_DRIVER_VERSION, MYSQL_JAR_NAME)
+
+
+# Download MySQL connector JAR for connect nodes
+if not os.path.exists(os.path.join(LOCAL_JARS_DIR, MYSQL_JAR_NAME)):
+    assert subprocess.check_call(DOWNLOAD_MYSQL_CONNECTOR, shell=True, stderr=subprocess.STDOUT) == 0
 
 
 class ConfigTest(unittest.TestCase):
@@ -157,39 +167,59 @@ def create_connector(cluster, service, name, create_command, host, port):
     cluster.run_command_on_service(service, create_command)
 
     status = None
-    for i in xrange(40):
+
+    for i in xrange(60):
         source_logs = cluster.run_command_on_service(service, CONNECTOR_STATUS.format(host=host, port=port, name=name))
 
         connector = json.loads(source_logs)
+
         # Retry if you see errors, connect might still be creating the connector.
         if "error_code" in connector:
-            time.sleep(2.5)
+            time.sleep(1.0)
+
         else:
             status = connector["connector"]["state"]
-            if status == "FAILED":
-                return status
-            elif status == "RUNNING":
-                return status
-            elif status == "UNASSIGNED":
-                time.sleep(2.5)
+
+            if status in ("FAILED", "RUNNING"):
+                break
+
+            time.sleep(1.0)
 
     return status
 
 
-def create_file_source_test_data(cluster, service, host_dir, file, num_records):
-    volumes = []
-    volumes.append("%s:/tmp/test" % host_dir)
-    print "VOLUMES : ", volumes
+def get_task_workers(cluster, service, name, host, port):
+    worker_ids = []
 
-    cluster.run_command_on_service(service, "bash -c 'rm -rf /tmp/test/*.txt && seq {count} > /tmp/test/{name}'".format(count=num_records, name=file))
-
-
-def wait_and_get_sink_output(cluster, service, host_dir, file, expected_num_records):
-    # Polls the output of file sink and tries to wait until an expected no of records appear in the file.
-    volumes = []
-    volumes.append("%s/:/tmp/test" % host_dir)
     for i in xrange(60):
-        sink_record_count = cluster.run_command_on_service(service, "bash -c '[ -e /tmp/test/%s ] && (wc -l /tmp/test/%s | cut -d\" \" -f1) || echo -1'" % (file, file))
+        source_logs = cluster.run_command_on_service(service, CONNECTOR_STATUS.format(host=host, port=port, name=name))
+
+        connector = json.loads(source_logs)
+
+        tasks = connector["tasks"]
+
+        for task in tasks:
+            if task["state"] != "RUNNING":
+                continue
+
+            worker_ids.append(task["worker_id"])
+
+        if worker_ids:
+            break
+
+        time.sleep(1.0)
+
+    return worker_ids
+
+
+def create_file_source_test_data(cluster, service, filename, num_records):
+    cluster.run_command_on_service(service, "bash -c 'rm -rf /tmp/test/*.txt && seq {count} > /tmp/test/{name}'".format(count=num_records, name=filename))
+
+
+def wait_and_get_sink_output(cluster, service, filename, expected_num_records):
+    # Polls the output of file sink and tries to wait until an expected no of records appear in the file.
+    for i in xrange(60):
+        sink_record_count = cluster.run_command_on_service(service, "bash -c '[ -e /tmp/test/%s ] && (wc -l /tmp/test/%s | cut -d\" \" -f1) || echo -1'" % (filename, filename))
 
         # The bash command returns -1, if the file is not found. otherwise it returns the no of lines in the file.
         if int(sink_record_count.strip()) == expected_num_records:
@@ -203,30 +233,23 @@ class SingleNodeDistributedTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        machine_name = "tester"
-        cls.machine = utils.TestMachine(machine_name)
-
-        cls.machine.ssh("mkdir -p /tmp/kafka-connect-single-node-test")
-
-        cls.machine.ssh("mkdir -p /tmp/kafka-connect-single-node-test/jars")
-        local_jars_dir = os.path.join(FIXTURES_DIR, "jars")
-
-        # Download MySQL connector JAR
-        if not os.path.exists(os.path.join(FIXTURES_DIR, "jars", MYSQL_JAR_NAME)):
-            assert subprocess.check_call(DOWNLOAD_MYSQL_CONNECTOR, shell=True, stderr=subprocess.STDOUT) == 0
-
-        cls.machine.scp_to_machine(local_jars_dir, "/tmp/kafka-connect-single-node-test")
-
-        cls.machine.ssh("mkdir -p /tmp/kafka-connect-single-node-test/sql")
-        local_sql_dir = os.path.join(FIXTURES_DIR, "sql")
-        cls.machine.scp_to_machine(local_sql_dir, "/tmp/kafka-connect-single-node-test")
-
-        cls.machine.ssh("mkdir -p /tmp/kafka-connect-single-node-test/scripts")
-        local_scripts_dir = os.path.join(FIXTURES_DIR, "scripts")
-        cls.machine.scp_to_machine(local_scripts_dir, "/tmp/kafka-connect-single-node-test")
-
         cls.cluster = utils.TestCluster("distributed-single-node", FIXTURES_DIR, "distributed-single-node.yml")
         cls.cluster.start()
+
+        for node in ["connect-host-avro", "connect-host-json"]:
+            container = cls.cluster.get_container(node)
+
+            cls.cluster.run_command_on_service(node, "rm -rf /tmp/test || true")
+            cls.cluster.run_command_on_service(node, "mkdir -p /tmp/test")
+            assert "PASS" in utils.run_cmd("docker cp {0}/scripts {1}:/tmp/test && echo PASS".format(FIXTURES_DIR, container.id))
+            assert "PASS" in utils.run_cmd("docker cp {0} {1}:/etc/kafka-connect && echo PASS".format(LOCAL_JARS_DIR, container.id))
+
+            # Bounce connector to pick up new jar
+            container.restart()
+
+        # Copy canned SQL to mysql-host
+        container = cls.cluster.get_container("mysql-host")
+        assert "PASS" in utils.run_cmd("docker cp {0}/sql {1}:/tmp && echo PASS".format(FIXTURES_DIR, container.id))
 
 	time.sleep(45)
 
@@ -236,7 +259,6 @@ class SingleNodeDistributedTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.machine.ssh("rm -rf /tmp/kafka-connect-single-node-test")
         cls.cluster.shutdown()
 
     @classmethod
@@ -263,11 +285,11 @@ class SingleNodeDistributedTest(unittest.TestCase):
         self.create_topics("kafka-host", "default", data_topic)
 
         # Test from within the container
-        self.is_connect_healthy_for_service("connect-host-json", 28082)
+        self.is_connect_healthy_for_service(worker_host, 28082)
 
         # Create a file
         record_count = 10000
-        create_file_source_test_data(self.cluster, worker_host, "/tmp/kafka-connect-single-node-test", file_source_input_file, record_count)
+        create_file_source_test_data(self.cluster, worker_host, file_source_input_file, record_count)
 
         file_source_create_cmd = FILE_SOURCE_CONNECTOR_CREATE % (source_connector_name, data_topic, "/tmp/test/%s" % file_source_input_file, worker_host, worker_port)
         source_status = create_connector(self.cluster, worker_host, source_connector_name, file_source_create_cmd, worker_host, worker_port)
@@ -277,7 +299,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
         sink_status = create_connector(self.cluster, worker_host, sink_connector_name, file_sink_create_cmd, worker_host, worker_port)
         self.assertEquals(sink_status, "RUNNING")
 
-        sink_op = wait_and_get_sink_output(self.cluster, worker_host, "/tmp/kafka-connect-single-node-test", file_sink_output_file, record_count)
+        sink_op = wait_and_get_sink_output(self.cluster, worker_host, file_sink_output_file, record_count)
         self.assertEquals(sink_op, record_count)
 
     def test_file_connector_on_host_network_with_avro(self):
@@ -294,11 +316,11 @@ class SingleNodeDistributedTest(unittest.TestCase):
         self.create_topics("kafka-host", "default.avro", data_topic)
 
         # Test from within the container
-        self.is_connect_healthy_for_service("connect-host-avro", 38082)
+        self.is_connect_healthy_for_service(worker_host, 38082)
 
         # Create a file
         record_count = 10000
-        create_file_source_test_data(self.cluster, worker_host, "/tmp/kafka-connect-single-node-test", file_source_input_file, record_count)
+        create_file_source_test_data(self.cluster, worker_host, file_source_input_file, record_count)
 
         file_source_create_cmd = FILE_SOURCE_CONNECTOR_CREATE % (source_connector_name, data_topic, "/tmp/test/%s" % file_source_input_file, worker_host, worker_port)
         source_status = create_connector(self.cluster, worker_host, source_connector_name, file_source_create_cmd, worker_host, worker_port)
@@ -308,7 +330,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
         sink_status = create_connector(self.cluster, worker_host, sink_connector_name, file_sink_create_cmd, worker_host, worker_port)
         self.assertEquals(sink_status, "RUNNING")
 
-        sink_op = wait_and_get_sink_output(self.cluster, worker_host, "/tmp/kafka-connect-single-node-test", file_sink_output_file, record_count)
+        sink_op = wait_and_get_sink_output(self.cluster, worker_host, file_sink_output_file, record_count)
         self.assertEquals(sink_op, record_count)
 
     def test_jdbc_source_connector_on_host_network(self):
@@ -326,7 +348,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
         assert "PASS" in self.cluster.run_command_on_service("mysql-host", "bash -c 'mysql -u root -pconfluent < /tmp/sql/mysql-test.sql && echo PASS'")
 
         # Test from within the container
-        self.is_connect_healthy_for_service("connect-host-json", 28082)
+        self.is_connect_healthy_for_service(worker_host, 28082)
 
         jdbc_source_create_cmd = JDBC_SOURCE_CONNECTOR_CREATE % (
             source_connector_name,
@@ -348,7 +370,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
         self.assertEquals(sink_status, "RUNNING")
 
         record_count = 10
-        sink_op = wait_and_get_sink_output(self.cluster, worker_host, "/tmp/kafka-connect-single-node-test", file_sink_output_file, record_count)
+        sink_op = wait_and_get_sink_output(self.cluster, worker_host, file_sink_output_file, record_count)
         self.assertEquals(sink_op, 10)
 
     def test_jdbc_source_connector_on_host_network_with_avro(self):
@@ -367,7 +389,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
         assert "PASS" in self.cluster.run_command_on_service("mysql-host", "bash -c 'mysql -u root -pconfluent < /tmp/sql/mysql-test.sql && echo PASS'")
 
         # Test from within the container
-        self.is_connect_healthy_for_service("connect-host-avro", 38082)
+        self.is_connect_healthy_for_service(worker_host, 38082)
 
         jdbc_source_create_cmd = JDBC_SOURCE_CONNECTOR_CREATE % (
             source_connector_name,
@@ -389,7 +411,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
         self.assertEquals(sink_status, "RUNNING")
 
         record_count = 10
-        sink_op = wait_and_get_sink_output(self.cluster, worker_host, "/tmp/kafka-connect-single-node-test", file_sink_output_file, record_count)
+        sink_op = wait_and_get_sink_output(self.cluster, worker_host, file_sink_output_file, record_count)
         self.assertEquals(sink_op, 10)
 
     def test_jdbc_sink_connector_on_host_network_with_avro(self):
@@ -423,13 +445,13 @@ class SingleNodeDistributedTest(unittest.TestCase):
         assert "PASS" in self.cluster.run_command_on_service("mysql-host", """ bash -c "mysql --user=root --password=confluent --silent -e 'show databases;' | grep connect_test && echo PASS || echo FAIL" """)
 
         tmp = ""
-        for i in xrange(40):
+        for i in xrange(60):
             if "PASS" in self.cluster.run_command_on_service("mysql-host", """ bash -c "mysql --user=root --password=confluent --silent --database=connect_test -e 'show tables;' | grep %s && echo PASS || echo FAIL" """ % topic):
                 tmp = self.cluster.run_command_on_service("mysql-host", """ bash -c "mysql --user=root --password=confluent --silent --database=connect_test -e 'select COUNT(*) FROM %s ;' " """ % topic)
                 if "10000" in tmp:
                     break
 
-            time.sleep(2.5)
+            time.sleep(1.0)
 
         assert "10000" in tmp
 
@@ -458,7 +480,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
         self.assertEquals(es_sink_status, "RUNNING")
 
         tmp = ""
-        for i in xrange(40):
+        for i in xrange(60):
             index_exists_cmd = 'bash -c "curl -s -f -XHEAD http://localhost:9200/%s && echo PASS || echo FAIL"' % topic
             if "PASS" in self.cluster.run_command_on_service("elasticsearch-host", index_exists_cmd):
                 doc_count = """ bash -c "curl -s -f http://localhost:9200/_cat/count/%s | cut -d' ' -f3" """ % topic
@@ -466,7 +488,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
                 if "10000" in tmp:
                     break
 
-            time.sleep(2.5)
+            time.sleep(1.0)
 
         assert "10000" in tmp
 
@@ -474,15 +496,21 @@ class SingleNodeDistributedTest(unittest.TestCase):
 class ClusterHostNetworkTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        machine_name = "tester"
-        cls.machine = utils.TestMachine(machine_name)
-
-        # Copy SSL files.
-        cls.machine.ssh("mkdir -p /tmp/kafka-connect-host-cluster-test/jars")
-        local_jars_dir = os.path.join(FIXTURES_DIR, "jars")
-        cls.machine.scp_to_machine(local_jars_dir, "/tmp/kafka-connect-host-cluster-test")
         cls.cluster = utils.TestCluster("cluster-test", FIXTURES_DIR, "cluster-host-plain.yml")
         cls.cluster.start()
+
+        for node in ["connect-host-avro", "connect-host"]:
+            for i in [1, 2, 3]:
+                service = '{0}-{1}'.format(node, i)
+
+                cls.cluster.run_command_on_service(service, "rm -rf /tmp/test || true")
+                cls.cluster.run_command_on_service(service, "mkdir -p /tmp/test")
+
+                container = cls.cluster.get_container(service)
+                utils.run_cmd("docker cp {0}/{1} {2}:/etc/kafka-connect/jars".format(LOCAL_JARS_DIR, MYSQL_JAR_NAME, container.id))
+
+                # Bounce connector to pick up new jar
+                container.restart()
 
         time.sleep(30)
 
@@ -491,7 +519,6 @@ class ClusterHostNetworkTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.machine.ssh("rm -rf /tmp/kafka-connect-host-cluster-test")
         cls.cluster.shutdown()
 
     def create_topics(self, kafka_service, internal_topic_prefix, data_topic):
@@ -533,7 +560,7 @@ class ClusterHostNetworkTest(unittest.TestCase):
 
         # Create a file
         record_count = 10000
-        create_file_source_test_data(self.cluster, "connect-host-1", "/tmp/connect-cluster-host-file-test", "source.test.txt", record_count)
+        create_file_source_test_data(self.cluster, "connect-host-1", "source.test.txt", record_count)
 
         file_source_create_cmd = FILE_SOURCE_CONNECTOR_CREATE % ("cluster-host-source-test", "cluster-host-file-test", "/tmp/test/source.test.txt", "connect-host-1", "28082")
         source_status = create_connector(self.cluster, "connect-host-1", "cluster-host-source-test", file_source_create_cmd, "connect-host-1", "28082")
@@ -543,7 +570,9 @@ class ClusterHostNetworkTest(unittest.TestCase):
         sink_status = create_connector(self.cluster, "connect-host-2", "cluster-host-sink-test", file_sink_create_cmd, "connect-host-2", "38082")
         self.assertEquals(sink_status, "RUNNING")
 
-        sink_op = wait_and_get_sink_output(self.cluster, "connect-host-2", "/tmp/connect-cluster-host-file-test", "sink.test.txt", record_count)
+        task_worker, _ = get_task_workers(self.cluster, "connect-host-2", "cluster-host-sink-test", "connect-host-2", 38082)[0].split(":")
+
+        sink_op = wait_and_get_sink_output(self.cluster, task_worker, "sink.test.txt", record_count)
         self.assertEquals(sink_op, record_count)
 
     def test_file_connector_with_avro(self):
@@ -558,7 +587,7 @@ class ClusterHostNetworkTest(unittest.TestCase):
 
         # Create a file
         record_count = 10000
-        create_file_source_test_data(self.cluster, "connect-host-avro-1", "/tmp/connect-cluster-host-file-test", "source.avro.test.txt", record_count)
+        create_file_source_test_data(self.cluster, "connect-host-avro-1", "source.avro.test.txt", record_count)
 
         file_source_create_cmd = FILE_SOURCE_CONNECTOR_CREATE % ("cluster-host-source-test", "cluster-host-avro-file-test", "/tmp/test/source.avro.test.txt", "connect-host-avro-1", "28083")
         source_status = create_connector(self.cluster, "connect-host-avro-1", "cluster-host-source-test", file_source_create_cmd, "connect-host-avro-1", "28083")
@@ -568,5 +597,11 @@ class ClusterHostNetworkTest(unittest.TestCase):
         sink_status = create_connector(self.cluster, "connect-host-avro-2", "cluster-host-sink-test", file_sink_create_cmd, "connect-host-avro-2", "38083")
         self.assertEquals(sink_status, "RUNNING")
 
-        sink_op = wait_and_get_sink_output(self.cluster, "connect-host-avro-2", "/tmp/connect-cluster-host-file-test", "sink.avro.test.txt", record_count)
+        task_worker, _ = get_task_workers(self.cluster, "connect-host-avro-2", "cluster-host-sink-test", "connect-host-avro-2", 38083)[0].split(":")
+
+        sink_op = wait_and_get_sink_output(self.cluster, task_worker, "sink.avro.test.txt", record_count)
         self.assertEquals(sink_op, record_count)
+
+
+if __name__ == '__main__':
+        unittest.main()
