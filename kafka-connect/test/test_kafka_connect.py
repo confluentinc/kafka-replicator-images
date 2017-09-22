@@ -221,7 +221,8 @@ def wait_and_get_sink_output(cluster, service, filename, expected_num_records):
         # The bash command returns -1, if the file is not found. otherwise it returns the no of lines in the file.
         if int(sink_record_count.strip()) == expected_num_records:
             break
-        time.sleep(15)
+
+        time.sleep(1.0)
 
     return int(sink_record_count.strip())
 
@@ -557,7 +558,9 @@ class ClusterHostNetworkTest(unittest.TestCase):
 
         # Create a file
         record_count = 10000
-        create_file_source_test_data(self.cluster, "connect-host-1", "source.test.txt", record_count)
+        create_file_source_test_data(self.cluster, "connect-host-1", "source.test.txt", record_count)  # We don't know which worker the task will land on.
+        create_file_source_test_data(self.cluster, "connect-host-2", "source.test.txt", record_count)
+        create_file_source_test_data(self.cluster, "connect-host-3", "source.test.txt", record_count)
 
         file_source_create_cmd = FILE_SOURCE_CONNECTOR_CREATE % ("cluster-host-source-test", "cluster-host-file-test", "/tmp/test/source.test.txt", "connect-host-1", "28082")
         source_status = create_connector(self.cluster, "connect-host-1", "cluster-host-source-test", file_source_create_cmd, "connect-host-1", "28082")
@@ -584,7 +587,9 @@ class ClusterHostNetworkTest(unittest.TestCase):
 
         # Create a file
         record_count = 10000
-        create_file_source_test_data(self.cluster, "connect-host-avro-1", "source.avro.test.txt", record_count)
+        create_file_source_test_data(self.cluster, "connect-host-avro-1", "source.avro.test.txt", record_count)  # We don't know which worker the task will land on.
+        create_file_source_test_data(self.cluster, "connect-host-avro-2", "source.avro.test.txt", record_count)
+        create_file_source_test_data(self.cluster, "connect-host-avro-3", "source.avro.test.txt", record_count)
 
         file_source_create_cmd = FILE_SOURCE_CONNECTOR_CREATE % ("cluster-host-source-test", "cluster-host-avro-file-test", "/tmp/test/source.avro.test.txt", "connect-host-avro-1", "28083")
         source_status = create_connector(self.cluster, "connect-host-avro-1", "cluster-host-source-test", file_source_create_cmd, "connect-host-avro-1", "28083")
