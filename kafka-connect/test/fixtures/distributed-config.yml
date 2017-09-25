@@ -5,8 +5,6 @@ services:
   zookeeper:
     hostname: zookeeper
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '2181:2181'
     environment:
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -16,8 +14,6 @@ services:
   kafka:
     hostname: kafka
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '9092:9092'
     depends_on:
       - zookeeper
     environment:
@@ -31,8 +27,6 @@ services:
   schema-registry:
     hostname: schema-registry
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-schema-registry:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '8081:8081'
     depends_on:
       - zookeeper
     environment:

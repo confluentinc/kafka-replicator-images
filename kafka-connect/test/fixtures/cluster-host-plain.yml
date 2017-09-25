@@ -4,8 +4,6 @@ services:
   zookeeper-1:
     hostname: zookeeper-1
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '22181:22181'
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 22181
@@ -19,8 +17,6 @@ services:
   zookeeper-2:
     hostname: zookeeper-2
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '32181:32181'
     environment:
       ZOOKEEPER_SERVER_ID: 2
       ZOOKEEPER_CLIENT_PORT: 32181
@@ -34,8 +30,6 @@ services:
   zookeeper-3:
     hostname: zookeeper-3
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '42181:42181'
     environment:
       ZOOKEEPER_SERVER_ID: 3
       ZOOKEEPER_CLIENT_PORT: 42181
@@ -49,8 +43,6 @@ services:
   kafka-1:
     hostname: kafka-1
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '29092:29092'
     depends_on:
       - zookeeper-1
       - zookeeper-2
@@ -65,8 +57,6 @@ services:
   kafka-2:
     hostname: kafka-2
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '39092:39092'
     depends_on:
       - zookeeper-1
       - zookeeper-2
@@ -81,8 +71,6 @@ services:
   kafka-3:
     hostname: kafka-3
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '49092:49092'
     depends_on:
       - zookeeper-1
       - zookeeper-2
@@ -102,8 +90,6 @@ services:
     # This is a workaround for the invalid topic exception. If you allow auto-topic creation, sometimes
     # the worker fails with Invalid topic exception, restarting fixes the issue.
     restart: on-failure:3
-    ports:
-      - '28082:28082'
     depends_on:
       - kafka-1
       - kafka-2
@@ -129,8 +115,6 @@ services:
     labels:
       - io.confluent.docker.testing=true
     restart: on-failure:3
-    ports:
-      - '38082:38082'
     depends_on:
       - kafka-1
       - kafka-2
@@ -156,8 +140,6 @@ services:
     labels:
       - io.confluent.docker.testing=true
     restart: on-failure:3
-    ports:
-      - '48082:48082'
     depends_on:
       - kafka-1
       - kafka-2
@@ -183,8 +165,6 @@ services:
     labels:
       - io.confluent.docker.testing=true
     restart: on-failure:3
-    ports:
-      - '28083:28083'
     depends_on:
       - kafka-1
       - kafka-2
@@ -210,8 +190,6 @@ services:
     labels:
       - io.confluent.docker.testing=true
     restart: on-failure:3
-    ports:
-      - '38083:38083'
     depends_on:
       - kafka-1
       - kafka-2
@@ -237,8 +215,6 @@ services:
     labels:
       - io.confluent.docker.testing=true
     restart: on-failure:3
-    ports:
-      - '48083:48083'
     depends_on:
       - kafka-1
       - kafka-2

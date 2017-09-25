@@ -4,8 +4,6 @@ services:
   zookeeper-src-a:
     hostname: zookeeper-src-a
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '22181:22181'
     environment:
       ZOOKEEPER_CLIENT_PORT: 22181
     labels:
@@ -14,8 +12,6 @@ services:
   zookeeper-src-b:
     hostname: zookeeper-src-b
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '32181:32181'
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
     labels:
@@ -24,8 +20,6 @@ services:
   zookeeper-dest:
     hostname: zookeeper-dest
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '42181:42181'
     environment:
       ZOOKEEPER_CLIENT_PORT: 42181
     labels:
@@ -34,8 +28,6 @@ services:
   kafka-1-src-a:
     hostname: kafka-1-src-a
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '9092:9092'
     depends_on:
         - zookeeper-src-a
     environment:
@@ -48,8 +40,6 @@ services:
   kafka-2-src-a:
     hostname: kafka-2-src-a
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '9095:9095'
     depends_on:
         - zookeeper-src-a
     environment:
@@ -62,8 +52,6 @@ services:
   kafka-1-src-b:
     hostname: kafka-1-src-b
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '9082:9082'
     depends_on:
         - zookeeper-src-b
     environment:
@@ -76,8 +64,6 @@ services:
   kafka-2-src-b:
     hostname: kafka-2-src-b
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '9085:9085'
     depends_on:
         - zookeeper-src-b
     environment:
@@ -90,8 +76,6 @@ services:
   kafka-1-dest:
     hostname: kafka-1-dest
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '9072:9072'
     depends_on:
         - zookeeper-dest
     environment:
@@ -104,8 +88,6 @@ services:
   kafka-2-dest:
     hostname: kafka-2-dest
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '9075:9075'
     depends_on:
         - zookeeper-dest
     environment:
@@ -122,8 +104,6 @@ services:
     # This is a workaround for the invalid topic exception. If you allow auto-topic creation, sometimes
     # the worker fails with Invalid topic exception, restarting fixes the issue.
     restart: on-failure:3
-    ports:
-      - '28082:28082'
     depends_on:
         - kafka-1-dest
         - kafka-2-dest
@@ -151,8 +131,6 @@ services:
     labels:
     - io.confluent.docker.testing=true
     restart: on-failure:3
-    ports:
-      - '38082:38082'
     depends_on:
         - kafka-1-dest
         - kafka-2-dest

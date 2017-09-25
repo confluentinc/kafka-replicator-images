@@ -5,8 +5,6 @@ services:
   zookeeper-host:
     hostname: zookeeper-host
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '32181:32181'
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
@@ -16,8 +14,6 @@ services:
   kafka-host:
     hostname: kafka-host
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '29092:29092'
     depends_on:
       - zookeeper-host
     environment:
@@ -31,8 +27,6 @@ services:
   schema-registry-host:
     hostname: schema-registry-host
     image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-schema-registry:${DOCKER_UPSTREAM_TAG}"
-    ports:
-      - '8081:8081'
     depends_on:
       - zookeeper-host
     environment:
@@ -65,8 +59,6 @@ services:
     image: "${DOCKER_REGISTRY}confluentinc/cp-kafka-connect:${DOCKER_TAG}"
     labels:
       - io.confluent.docker.testing=true
-    ports:
-      - '28082:28082'
     depends_on:
       - kafka-host
       - mysql-host
@@ -93,8 +85,6 @@ services:
     image: "${DOCKER_REGISTRY}confluentinc/cp-kafka-connect:${DOCKER_TAG}"
     labels:
       - io.confluent.docker.testing=true
-    ports:
-      - '38082:38082'
     depends_on:
       - kafka-host
       - mysql-host
