@@ -4,7 +4,7 @@ version: '2'
 services:
   zookeeper-host:
     hostname: zookeeper-host
-    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
+    image: "${DOCKER_TEST_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_TEST_TAG}"
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
@@ -13,7 +13,7 @@ services:
 
   kafka-host:
     hostname: kafka-host
-    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
+    image: "${DOCKER_TEST_REGISTRY}confluentinc/cp-kafka:${DOCKER_TEST_TAG}"
     depends_on:
       - zookeeper-host
     environment:
@@ -26,7 +26,7 @@ services:
 
   schema-registry-host:
     hostname: schema-registry-host
-    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-schema-registry:${DOCKER_UPSTREAM_TAG}"
+    image: "${DOCKER_TEST_REGISTRY}confluentinc/cp-schema-registry:${DOCKER_TEST_TAG}"
     depends_on:
       - zookeeper-host
     environment:

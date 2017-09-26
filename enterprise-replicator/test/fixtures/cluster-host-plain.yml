@@ -3,7 +3,7 @@ version: '2'
 services:
   zookeeper-src-a:
     hostname: zookeeper-src-a
-    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
+    image: "${DOCKER_TEST_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_TEST_TAG}"
     environment:
       ZOOKEEPER_CLIENT_PORT: 22181
     labels:
@@ -11,7 +11,7 @@ services:
 
   zookeeper-src-b:
     hostname: zookeeper-src-b
-    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
+    image: "${DOCKER_TEST_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_TEST_TAG}"
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
     labels:
@@ -19,7 +19,7 @@ services:
 
   zookeeper-dest:
     hostname: zookeeper-dest
-    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_UPSTREAM_TAG}"
+    image: "${DOCKER_TEST_REGISTRY}confluentinc/cp-zookeeper:${DOCKER_TEST_TAG}"
     environment:
       ZOOKEEPER_CLIENT_PORT: 42181
     labels:
@@ -27,7 +27,7 @@ services:
 
   kafka-1-src-a:
     hostname: kafka-1-src-a
-    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
+    image: "${DOCKER_TEST_REGISTRY}confluentinc/cp-kafka:${DOCKER_TEST_TAG}"
     depends_on:
         - zookeeper-src-a
     environment:
@@ -39,7 +39,7 @@ services:
 
   kafka-2-src-a:
     hostname: kafka-2-src-a
-    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
+    image: "${DOCKER_TEST_REGISTRY}confluentinc/cp-kafka:${DOCKER_TEST_TAG}"
     depends_on:
         - zookeeper-src-a
     environment:
@@ -51,7 +51,7 @@ services:
 
   kafka-1-src-b:
     hostname: kafka-1-src-b
-    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
+    image: "${DOCKER_TEST_REGISTRY}confluentinc/cp-kafka:${DOCKER_TEST_TAG}"
     depends_on:
         - zookeeper-src-b
     environment:
@@ -63,7 +63,7 @@ services:
 
   kafka-2-src-b:
     hostname: kafka-2-src-b
-    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
+    image: "${DOCKER_TEST_REGISTRY}confluentinc/cp-kafka:${DOCKER_TEST_TAG}"
     depends_on:
         - zookeeper-src-b
     environment:
@@ -75,7 +75,7 @@ services:
 
   kafka-1-dest:
     hostname: kafka-1-dest
-    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
+    image: "${DOCKER_TEST_REGISTRY}confluentinc/cp-kafka:${DOCKER_TEST_TAG}"
     depends_on:
         - zookeeper-dest
     environment:
@@ -87,7 +87,7 @@ services:
 
   kafka-2-dest:
     hostname: kafka-2-dest
-    image: "${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}"
+    image: "${DOCKER_TEST_REGISTRY}confluentinc/cp-kafka:${DOCKER_TEST_TAG}"
     depends_on:
         - zookeeper-dest
     environment:

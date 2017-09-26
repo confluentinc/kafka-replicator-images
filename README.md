@@ -25,10 +25,12 @@ mvn clean package  # Build local images
 
 - *docker.skip-build*: Set to `false` to include Docker images as part of build.
 - *docker.skip-test*: Set to `false` to include Docker image integration tests as part of the build. Requires Python 2.7, `tox`.
-- *docker.registry*: Build images for a private registry. Trailing `/` is required.
-- *docker.tag*: Tag postfix for built images.
-- *docker.upstream-registry*: Registry to pull base images and test dependency images from. Trailing `/` is required.
-- *docker.upstream-tag*: Use the given tag postfix when pulling base images and test dependency images.
+- *docker.registry*: (Optional) Build images for a private registry. Trailing `/` is required. Defaults to `docker.io/`.
+- *docker.tag*: (Optional) Tag postfix for built images. Defaults to the value of `project.version`.
+- *docker.upstream-registry*: (Optional) Registry to pull base images from. Trailing `/` is required. Defaults to the value of `docker.registry`.
+- *docker.upstream-tag*: (Optional) Use the given tag postfix when pulling base images. Defaults to the value of `docker.tag`.
+- *docker.test-registry*: (Optional) Registry to pull test dependency images from. Trailing `/` is required. Defaults to the value of `docker.upstream-registry`.
+- *docker.test-tag*: (Optional) Use the given tag postfix when pulling test dependency images. Defaults to the value of `docker.upstream-tag`.
 
 
 ## Testing
