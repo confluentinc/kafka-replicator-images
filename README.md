@@ -25,7 +25,7 @@ Properties are inherited from a top-level POM. Properties may be overridden on t
 
 ## Building
 
-This project uses `maven-assembly-plugin` and `dockerfile-maven` plugin to build Docker images via Maven.
+This project uses `maven-assembly-plugin` and `dockerfile-maven-plugin` to build Docker images via Maven.
 
 To build SNAPSHOT images, configure `.m2/settings.xml` for SNAPSHOT dependencies. These must be available at build time.
 
