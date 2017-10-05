@@ -20,7 +20,7 @@ ARG DOCKER_UPSTREAM_TAG
 
 FROM ${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-kafka:${DOCKER_UPSTREAM_TAG}
 
-ARG CONNECT_VERSION
+ARG PROJECT_VERSION
 ARG ARTIFACT_ID
 
 # Hard-code component to override parent (ARG is ineffective)
@@ -44,9 +44,9 @@ RUN echo "===> Setting up ${ARTIFACT_ID} dirs ..." \
     && chmod -R ag+w /etc/${COMPONENT} /etc/${COMPONENT}/secrets /etc/${COMPONENT}/jars
 
 # Install under "kafka-connect-images" to match CLASSPATH pattern used by connect startup scripts
-ADD target/${ARTIFACT_ID}-${CONNECT_VERSION}-package/share/java/${ARTIFACT_ID}/* /usr/share/java/kafka-connect-images/
+ADD target/${ARTIFACT_ID}-${PROJECT_VERSION}-package/share/java/${ARTIFACT_ID}/* /usr/share/java/kafka-connect-images/
 
-ADD target/dependency/avro-console-scripts-${CONNECT_VERSION}/* /usr/bin/
+ADD target/dependency/avro-console-scripts-${PROJECT_VERSION}/* /usr/bin/
 
 VOLUME ["/etc/${COMPONENT}/jars", "/etc/${COMPONENT}/secrets"]
 

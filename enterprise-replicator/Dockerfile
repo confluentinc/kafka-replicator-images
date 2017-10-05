@@ -20,7 +20,7 @@ ARG DOCKER_TAG
 
 FROM ${DOCKER_REGISTRY}confluentinc/cp-kafka-connect-base:${DOCKER_TAG}
 
-ARG CONNECT_VERSION
+ARG PROJECT_VERSION
 ARG ARTIFACT_ID
 
 MAINTAINER partner-support@confluent.io
@@ -30,7 +30,7 @@ LABEL io.confluent.docker.git.id=$COMMIT_ID
 ARG BUILD_NUMBER=-1
 LABEL io.confluent.docker.build.number=$BUILD_NUMBER
 
-ADD target/${ARTIFACT_ID}-${CONNECT_VERSION}-package/share/doc/* /usr/share/doc/${ARTIFACT_ID}/
+ADD target/${ARTIFACT_ID}-${PROJECT_VERSION}-package/share/doc/* /usr/share/doc/${ARTIFACT_ID}/
 
 # Install under "kafka-connect-images" to match CLASSPATH pattern used by connect startup scripts
-ADD target/${ARTIFACT_ID}-${CONNECT_VERSION}-package/share/java/${ARTIFACT_ID}/* /usr/share/java/kafka-connect-images/
+ADD target/${ARTIFACT_ID}-${PROJECT_VERSION}-package/share/java/${ARTIFACT_ID}/* /usr/share/java/kafka-connect-images/
