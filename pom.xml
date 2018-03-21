@@ -25,12 +25,6 @@
     
     <properties>
         <component.name>kafka-connect</component.name>
-        <!-- Registry for this build. -->
-        <docker.registry>368821881613.dkr.ecr.us-west-2.amazonaws.com/</docker.registry>
-        <!-- Tag for this build -->
-        <docker.tag>${project.version}</docker.tag>
-        <!-- Tag for base images -->
-        <docker.upstream-tag>4.1.0-latest</docker.upstream-tag>
     </properties>
 
     <dependencies>
