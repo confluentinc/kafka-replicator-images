@@ -249,7 +249,7 @@ class SingleNodeDistributedTest(unittest.TestCase):
         container = cls.cluster.get_container("mysql-host")
         assert "PASS" in utils.run_cmd("docker cp {0}/sql {1}:/tmp && echo PASS".format(FIXTURES_DIR, container.id))
 
-	time.sleep(45)
+        time.sleep(45)
 
         assert "PASS" in cls.cluster.run_command_on_service("zookeeper-host", ZK_READY.format(servers="zookeeper-host:32181"))
         assert "PASS" in cls.cluster.run_command_on_service("kafka-host", KAFKA_READY.format(brokers=1))
