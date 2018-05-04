@@ -31,6 +31,11 @@
 
     <properties>
         <docker.skip-build>false</docker.skip-build>
+        <!-- Tag for this build -->
+        <docker.tag>${project.version}</docker.tag>
+        <!-- Tag for base images -->
+        <docker.upstream-tag>latest</docker.upstream-tag>
+
     </properties>
 
     <dependencies>
