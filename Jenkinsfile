@@ -9,4 +9,5 @@ dockerfile {
     nodeLabel = 'docker-oraclejdk8-compose'
     dockerPush = true
     slackChannel = '#connect-eng'
+    slackChannel = '#connect-warn'
 }
