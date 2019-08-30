@@ -7,5 +7,5 @@ dockerfile {
     mvnSkipDeploy = true
     nodeLabel = 'docker-oraclejdk8-compose'
     withPush = true
-    slackChannel = '#connect-eng'
+    slackChannel = '#connect-warn'
 }
