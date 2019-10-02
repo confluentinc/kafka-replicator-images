@@ -1,12 +1,15 @@
 #!/usr/bin/env groovy
 
 dockerfile {
-    dockerRepos = ['confluentinc/cp-kafka-connect-base', 'confluentinc/cp-kafka-connect', 'confluentinc/cp-enterprise-replicator']
-    dockerPullDeps = ['confluentinc/cp-kafka']
-    dockerRegistry = '368821881613.dkr.ecr.us-west-2.amazonaws.com/'
+    dockerPush = false
+    dockerRepos = ['confluentinc/cp-enterprise-replicator',
+      'confluentinc/cp-enterprise-replicator-executable']
     mvnPhase = 'package'
     mvnSkipDeploy = true
-    nodeLabel = 'docker-oraclejdk8-compose'
-    dockerPush = true
-    slackChannel = '#connect-warn'
+    nodeLabel = 'docker-oraclejdk8-compose-swarm'
+    slackChannel = 'tools-notifications' //TODO: change to correct team
+    upstreamProjects = [] //TODO: after roll out update
+    dockerPullDeps = ['confluentinc/cp-base-new', 'confluentinc/cp-server-connect-base']
+    usePackages = true
+    cron = '' // Disable the cron because this job requires parameters
 }

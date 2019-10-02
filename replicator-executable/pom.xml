@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--~
-  ~ Copyright 2017 Confluent Inc.
+  ~ Copyright 2019 Confluent Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -21,31 +21,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.confluent</groupId>
+        <groupId>io.confluent.kafka-connect-images</groupId>
         <artifactId>kafka-connect-images-parent</artifactId>
         <version>5.4.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>io.confluent</groupId>
-    <artifactId>cp-enterprise-replicator</artifactId>
-    <name>Kafka Connect Enterprise Replicator</name>
+    <groupId>io.confluent.kafka-connect-images</groupId>
+    <artifactId>cp-enterprise-replicator-executable</artifactId>
+    <name>Replicator Executable Docker Image</name>
 
     <properties>
         <docker.skip-build>false</docker.skip-build>
-        <docker.skip-test>false</docker.skip-test>
+        <docker.skip-test>true</docker.skip-test>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>io.confluent</groupId>
-            <artifactId>cp-kafka-connect-base</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.confluent</groupId>
-            <artifactId>kafka-connect-replicator</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
 </project>

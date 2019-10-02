@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright 2016 Confluent Inc.
+# Copyright 2018 Confluent Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,24 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -o nounset \
-    -o errexit \
-    -o verbose \
-    -o xtrace
+. /etc/confluent/docker/bash-config
 
+. /etc/confluent/docker/mesos-setup.sh
 . /etc/confluent/docker/apply-mesos-overrides
 
 echo "===> ENV Variables ..."
-env | sort
+show_env
 
 echo "===> User"
 id
 
 echo "===> Configuring ..."
 /etc/confluent/docker/configure
-
-echo "===> Running preflight checks ... "
-/etc/confluent/docker/ensure
 
 echo "===> Launching ... "
 exec /etc/confluent/docker/launch

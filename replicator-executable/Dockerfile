@@ -1,5 +1,5 @@
 #
-# Copyright 2016 Confluent Inc.
+# Copyright 2019 Confluent Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,24 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Builds a docker image for Kafka Connect
-
-ARG DOCKER_REGISTRY
+ARG DOCKER_UPSTREAM_REGISTRY
+ARG DOCKER_UPSTREAM_TAG=latest
 ARG DOCKER_TAG
 
-FROM ${DOCKER_REGISTRY}confluentinc/cp-kafka-connect-base:${DOCKER_TAG}
+FROM ${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-enterprise-replicator:${DOCKER_TAG}
 
 ARG PROJECT_VERSION
 ARG ARTIFACT_ID
-
+ 
+# Make sure you use an appropriate contact address.
 MAINTAINER partner-support@confluent.io
 LABEL io.confluent.docker=true
 ARG COMMIT_ID=unknown
 LABEL io.confluent.docker.git.id=$COMMIT_ID
 ARG BUILD_NUMBER=-1
 LABEL io.confluent.docker.build.number=$BUILD_NUMBER
+ARG CONFLUENT_VERSION
+ARG CONFLUENT_PACKAGES_REPO
+ARG CONFLUENT_PLATFORM_LABEL
+ARG CONFLUENT_DEB_VERSION
+ARG ALLOW_UNSIGNED
 
-ADD target/${ARTIFACT_ID}-${PROJECT_VERSION}-package/share/doc/* /usr/share/doc/${ARTIFACT_ID}/
+ENV COMPONENT=replicator
 
-# Install under "kafka-connect-images" to match CLASSPATH pattern used by connect startup scripts
-ADD target/${ARTIFACT_ID}-${PROJECT_VERSION}-package/share/java/${ARTIFACT_ID}/* /usr/share/java/kafka-connect-images/
+VOLUME ["/etc/${COMPONENT}/secrets"]
+
+COPY include/etc/confluent/docker /etc/confluent/docker
+
+CMD ["/etc/confluent/docker/run"]
