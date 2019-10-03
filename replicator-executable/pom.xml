@@ -17,27 +17,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.confluent</groupId>
-        <artifactId>common-docker</artifactId>
+        <groupId>io.confluent.kafka-connect-images</groupId>
+        <artifactId>kafka-connect-images-parent</artifactId>
         <version>5.4.0-SNAPSHOT</version>
     </parent>
 
     <groupId>io.confluent.kafka-connect-images</groupId>
-    <artifactId>kafka-connect-images-parent</artifactId>
-    <packaging>pom</packaging>
-    <name>Kafka Connect Replicator Docker Images</name>
-    <description>Build files for Confluent's Kafka Connect Replicator Docker images</description>
-    <version>5.4.0-SNAPSHOT</version>
-
-    <modules>
-        <module>replicator</module>
-        <module>replicator-executable</module>
-    </modules>
+    <artifactId>cp-enterprise-replicator-executable</artifactId>
+    <name>Replicator Executable Docker Image</name>
 
     <properties>
-        <component.name>kafka-connect-replicator</component.name>
+        <docker.skip-build>false</docker.skip-build>
+        <docker.skip-test>true</docker.skip-test>
     </properties>
 </project>
