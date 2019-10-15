@@ -36,7 +36,7 @@ ARG ALLOW_UNSIGNED
 RUN echo "===> Installing Replicator ..." \
     && yum -q -y update \
     && yum install -y \
-        confluent-kafka-connect-replicator-${CONFLUENT_VERSION}${CONFLUENT_PLATFORM_LABEL} \
+        confluent-kafka-connect-replicator-${CONFLUENT_VERSION} \
     && echo "===> Cleaning up ..."  \
     && yum clean all \
     && rm -rf /tmp/*
