@@ -29,9 +29,6 @@ LABEL io.confluent.docker.git.id=$COMMIT_ID
 ARG BUILD_NUMBER=-1
 LABEL io.confluent.docker.build.number=$BUILD_NUMBER
 ARG CONFLUENT_VERSION
-ARG CONFLUENT_PACKAGES_REPO
-ARG CONFLUENT_PLATFORM_LABEL
-ARG ALLOW_UNSIGNED
 
 RUN echo "===> Installing Replicator ..." \
     && yum -q -y update \
