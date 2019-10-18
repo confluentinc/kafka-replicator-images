@@ -7,7 +7,7 @@ setuptools.setup(
     author="Confluent, Inc.",
     author_email="replicator@confluent.io",
     description='Kafka Replicator docker image tests',
-    url="https://github.com/confluentinc/kafka-connect-images",
+    url="https://github.com/confluentinc/kafka-replicator-images",
     dependency_links=open("requirements.txt").read().split("\n"),
     packages=['test'],
     include_package_data=True,
