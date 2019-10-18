@@ -1,6 +1,6 @@
-# Docker images for Kafka Connect
+# Docker images for Kafka Replicator
 
-This repo provides build files for [Connect](https://www.confluent.io/connectors/) Docker images.
+This repo provides build files for [Replicator](https://www.confluent.io/confluent-replicator) Docker images.
 
 ## Properties
 

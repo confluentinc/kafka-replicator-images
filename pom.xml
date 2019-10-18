@@ -26,10 +26,10 @@
     </parent>
 
     <groupId>io.confluent.kafka-connect-images</groupId>
-    <artifactId>kafka-connect-images-parent</artifactId>
+    <artifactId>kafka-replicator-images-parent</artifactId>
     <packaging>pom</packaging>
-    <name>Kafka Connect Replicator Docker Images</name>
-    <description>Build files for Confluent's Kafka Connect Replicator Docker images</description>
+    <name>Kafka Replicator Docker Images</name>
+    <description>Build files for Confluent's Kafka Replicator Docker images</description>
     <version>5.4.0-SNAPSHOT</version>
 
     <modules>
@@ -38,6 +38,6 @@
     </modules>
 
     <properties>
-        <component.name>kafka-connect-replicator</component.name>
+        <component.name>kafka-replicator</component.name>
     </properties>
 </project>
