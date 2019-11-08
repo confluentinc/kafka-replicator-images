@@ -11,7 +11,7 @@ log4j.logger.org.reflections=ERROR
 
 {% if env['REPLICATOR_LOG4J_LOGGERS'] %}
 {% set loggers = parse_log4j_loggers(env['REPLICATOR_LOG4J_LOGGERS']) %}
-{% for logger,loglevel in loggers.items() %}
+{% for logger,loglevel in loggers.iteritems() %}
 log4j.logger.{{logger}}={{loglevel}}
 {% endfor %}
 {% endif %}
