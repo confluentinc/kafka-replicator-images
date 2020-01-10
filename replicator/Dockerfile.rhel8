@@ -30,6 +30,8 @@ ARG BUILD_NUMBER=-1
 LABEL io.confluent.docker.build.number=$BUILD_NUMBER
 ARG CONFLUENT_VERSION
 
+USER root
+
 RUN echo "===> Installing Replicator ..." \
     && yum -q -y update \
     && yum install -y \
@@ -37,3 +39,5 @@ RUN echo "===> Installing Replicator ..." \
     && echo "===> Cleaning up ..."  \
     && yum clean all \
     && rm -rf /tmp/*
+
+USER appuser
