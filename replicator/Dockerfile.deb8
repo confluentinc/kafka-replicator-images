@@ -41,6 +41,5 @@ RUN echo "===> Installing Replicator ..." \
     && cat /etc/apt/sources.list \
     && apt-get install -y apt-transport-https \
     && apt-get -qq update \
-    && apt-get install -y confluent-kafka-connect-replicator=${CONFLUENT_VERSION}${CONFLUENT_PLATFORM_LABEL}-${CONFLUENT_DEB_VERSION} \
     && echo "===> Cleaning up ..."  \
     && apt-get clean && rm -rf /tmp/* /var/lib/apt/lists/*
