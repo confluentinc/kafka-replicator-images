@@ -41,4 +41,10 @@ VOLUME ["/etc/${COMPONENT}/secrets"]
 
 COPY --chown=appuser:appuser include/etc/confluent/docker /etc/confluent/docker
 
+USER root
+
+RUN chown appuser:appuser -R /etc/replicator /etc/kafka-connect-replicator
+
+USER appuser
+
 CMD ["/etc/confluent/docker/run"]
