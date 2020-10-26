@@ -39,5 +39,6 @@
 
     <properties>
         <component.name>kafka-replicator</component.name>
+        <io.confluent.kafka-replicator-images.version>6.1.0-0</io.confluent.kafka-replicator-images.version>
     </properties>
 </project>
