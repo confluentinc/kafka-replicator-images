@@ -39,7 +39,6 @@ ARG CONFLUENT_VERSION
 USER root
 
 RUN echo "===> Installing Replicator ..." \
-    && yum -q -y update \
     && yum install -y \
         confluent-kafka-connect-replicator-${CONFLUENT_VERSION} \
     && echo "===> Cleaning up ..."  \
