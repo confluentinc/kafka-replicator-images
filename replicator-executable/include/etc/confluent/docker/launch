@@ -35,11 +35,14 @@ if [ "x$KAFKA_JMX_PORT" != "x" ]; then
 fi
 
 echo "===> Launching ${COMPONENT} ... "
-# Add external jars to the classpath
+# Add external jars, replicator monitoring and monitoring interceptors to the classpath
 # And this also makes sure that the CLASSPATH does not start with ":/etc/..."
 # because this causes the plugin scanner to scan the entire disk.
-export CLASSPATH="/etc/kafka-connect/jars/*"
-
+if [ -z "$CLASSPATH" ]; then
+    REST_EXTENSION_JAR=$(find /usr/share/java/kafka-connect-replicator/replicator-rest-extension-*jar)
+    MONITORING_INTERCEPTOR_JAR=$(find /usr/share/java/monitoring-interceptors/monitoring-interceptors-*)
+    export CLASSPATH="/etc/kafka-connect/jars/*:$REST_EXTENSION_JAR:$MONITORING_INTERCEPTOR_JAR"
+fi
 
 # File properties
 export ARGS=""
