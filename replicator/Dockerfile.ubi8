@@ -45,4 +45,8 @@ RUN echo "===> Installing Replicator ..." \
     && yum clean all \
     && rm -rf /tmp/*
 
+COPY --chown=appuser:appuser include/etc/confluent/docker /etc/confluent/docker
+
 USER appuser
+
+CMD ["/etc/confluent/docker/run"]
