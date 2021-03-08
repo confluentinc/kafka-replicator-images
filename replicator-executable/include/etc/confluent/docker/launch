@@ -39,8 +39,8 @@ echo "===> Launching ${COMPONENT} ... "
 # And this also makes sure that the CLASSPATH does not start with ":/etc/..."
 # because this causes the plugin scanner to scan the entire disk.
 if [ -z "$CLASSPATH" ]; then
-    REST_EXTENSION_JAR=$(ls -d /usr/share/java/kafka-connect-replicator/*replicator-rest-extension-*jar)
-    MONITORING_INTERCEPTOR_JAR=$(ls -d /usr/share/java/monitoring-interceptors/*monitoring-interceptors-*jar)
+    REST_EXTENSION_JAR=$(find /usr/share/java/kafka-connect-replicator/replicator-rest-extension-*jar)
+    MONITORING_INTERCEPTOR_JAR=$(find /usr/share/java/monitoring-interceptors/monitoring-interceptors-*)
     export CLASSPATH="/etc/kafka-connect/jars/*:$REST_EXTENSION_JAR:$MONITORING_INTERCEPTOR_JAR"
 fi
 
