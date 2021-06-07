@@ -35,14 +35,10 @@ if [ "x$KAFKA_JMX_PORT" != "x" ]; then
 fi
 
 echo "===> Launching ${COMPONENT} ... "
-# Add external jars, replicator monitoring and monitoring interceptors to the classpath
+# Add external jars to the classpath
 # And this also makes sure that the CLASSPATH does not start with ":/etc/..."
 # because this causes the plugin scanner to scan the entire disk.
-if [ -z "$CLASSPATH" ]; then
-    REST_EXTENSION_JAR=$(find /usr/share/java/kafka-connect-replicator/replicator-rest-extension-*jar)
-    MONITORING_INTERCEPTOR_JAR=$(find /usr/share/java/monitoring-interceptors/monitoring-interceptors-*)
-    export CLASSPATH="/etc/kafka-connect/jars/*:$REST_EXTENSION_JAR:$MONITORING_INTERCEPTOR_JAR"
-fi
+export CLASSPATH="/etc/kafka-connect/jars/*"
 
 # File properties
 export ARGS=""
@@ -75,7 +71,7 @@ export ARGS="--consumer.config ${CONSUMER_CONFIG}"
 export ARGS="${ARGS} --producer.config ${PRODUCER_CONFIG}"
 export ARGS="${ARGS} --cluster.id ${CLUSTER_ID}"
 
-# Optional file-based properties 
+# Optional file-based properties
 if [ -f "$REPLICATION_CONFIG" ]; then
   export ARGS="${ARGS} --replication.config ${REPLICATION_CONFIG}"
 fi
@@ -88,7 +84,7 @@ if [ -f "$PRODUCER_MONITORING_CONFIG" ]; then
   export ARGS="${ARGS} --producer.monitoring.config ${PRODUCER_MONITORING_CONFIG}"
 fi
 
-# Optional command line arguments 
+# Optional command line arguments
 if [ "x$BLACKLIST" != "x" ]; then
   export ARGS="${ARGS} --blacklist ${BLACKLIST}"
 fi
