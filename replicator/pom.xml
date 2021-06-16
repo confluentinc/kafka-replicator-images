@@ -23,7 +23,7 @@
     <parent>
         <groupId>io.confluent.kafka-connect-images</groupId>
         <artifactId>kafka-replicator-images-parent</artifactId>
-        <version>7.0.0-0</version>
+        <version>7.0.0-61</version>
     </parent>
 
     <groupId>io.confluent.kafka-connect-images</groupId>
