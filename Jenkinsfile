@@ -7,6 +7,6 @@ docker_oraclejdk8 {
     dockerUpstreamTag = 'latest'  // Temporary; use trunk-latest when available
     mvnPhase = 'integration-test'
     mvnSkipDeploy = true
-    nodeLabel = 'docker-oraclejdk8-compose'
+    nodeLabel = 'docker-debian-jdk8-compose'
     withPush = true
 }
