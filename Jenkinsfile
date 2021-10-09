@@ -6,7 +6,7 @@ dockerfile {
     dockerRegistry = '368821881613.dkr.ecr.us-west-2.amazonaws.com/'
     mvnPhase = 'package'
     mvnSkipDeploy = true
-    nodeLabel = 'docker-oraclejdk8-compose'
+    nodeLabel = 'docker-debian-jdk8-compose'
     dockerPush = true
     slackChannel = '#replicator-alerts'
 }
