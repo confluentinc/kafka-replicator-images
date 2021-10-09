@@ -7,7 +7,7 @@ dockerfile {
     dockerUpstreamTag = '4.1.x-71'
     mvnPhase = 'package'
     mvnSkipDeploy = true
-    nodeLabel = 'docker-oraclejdk8-compose'
+    nodeLabel = 'docker-debian-jdk8-compose'
     dockerPush = true
     slackChannel = '#connect-eng'
 }
