@@ -6,7 +6,7 @@ dockerfile {
       'confluentinc/cp-enterprise-replicator-executable']
     mvnPhase = 'package'
     mvnSkipDeploy = true
-    nodeLabel = 'docker-oraclejdk8-compose-swarm'
+    nodeLabel = 'docker-debian-jdk8-compose'
     slackChannel = '#replicator-alerts'
     upstreamProjects = []
     dockerPullDeps = ['confluentinc/cp-base-new', 'confluentinc/cp-server-connect-base']
