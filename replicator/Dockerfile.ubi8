@@ -21,6 +21,7 @@ FROM ${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-server-connect-base:${DOCKER_UPS
 ARG PROJECT_VERSION
 ARG ARTIFACT_ID
 ARG GIT_COMMIT
+ARG CONFLUENT_PACKAGES_REPO
 
 LABEL maintainer="partner-support@confluent.io"
 LABEL vendor="Confluent"
