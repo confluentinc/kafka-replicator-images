@@ -9,4 +9,5 @@ dockerfile {
     nodeLabel = 'docker-debian-jdk8-compose'
     dockerPush = true
     slackChannel = '#replicator-alerts'
+    disableConcurrentBuilds = true
 }
