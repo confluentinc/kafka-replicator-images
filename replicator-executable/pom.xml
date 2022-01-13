@@ -29,7 +29,13 @@
     <groupId>io.confluent.kafka-connect-images</groupId>
     <artifactId>cp-enterprise-replicator-executable</artifactId>
     <name>Replicator Executable Docker Image</name>
-
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     <properties>
         <docker.skip-build>false</docker.skip-build>
         <docker.skip-test>true</docker.skip-test>
