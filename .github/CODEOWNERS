@@ -1,4 +1,2 @@
 # See go/codeowners - automatically generated for confluentinc/kafka-replicator-images:
-*	@confluentinc/connect
-*	@confluentinc/devx
 *	@confluentinc/replicator
