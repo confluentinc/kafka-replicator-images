@@ -1,2 +1,2 @@
-# See go/codeowners - automatically generated for confluentinc/kafka-replicator-images:
-*	@confluentinc/replicator
+# default owner
+* @confluentinc/kafka-global
