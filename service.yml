@@ -1,0 +1,7 @@
+name: kafka-replicator-images
+lang: unknown
+lang_version: unknown
+codeowners:
+  enable: true
+git:
+  enable: true
