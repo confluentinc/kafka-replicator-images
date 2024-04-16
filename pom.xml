@@ -36,7 +36,7 @@
         <module>replicator</module>
         <module>replicator-executable</module>
     </modules>
-
+   
     <properties>
         <component.name>kafka-replicator</component.name>
         <io.confluent.kafka-replicator-images.version>7.8.0-0</io.confluent.kafka-replicator-images.version>
