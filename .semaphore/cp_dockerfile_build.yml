@@ -120,7 +120,7 @@ blocks:
   - name: Deploy AMD confluentinc/cp-enterprise-replicator
     dependencies: ["Build, Test, & Scan AMD"]
     run:
-      when: "branch = 'master' or branch =~ '[0-9]+\\.[0-9]+\\.[0-9]+'"
+      when: "branch = 'master' or branch =~ '^[0-9]+\\.[0-9]+\\.x$' or branch =~ '^[0-9]+\\.[0-9]+\\.[0-9]+(-cp[0-9]+)?-rc[0-9]+$'"
     task:
       jobs:
         - name: Deploy AMD confluentinc/cp-enterprise-replicator ubi8
@@ -144,7 +144,7 @@ blocks:
   - name: Deploy AMD confluentinc/cp-enterprise-replicator-executable
     dependencies: ["Build, Test, & Scan AMD"]
     run:
-      when: "branch = 'master' or branch =~ '[0-9]+\\.[0-9]+\\.[0-9]+'"
+      when: "branch = 'master' or branch =~ '^[0-9]+\\.[0-9]+\\.x$' or branch =~ '^[0-9]+\\.[0-9]+\\.[0-9]+(-cp[0-9]+)?-rc[0-9]+$'"
     task:
       jobs:
         - name: Deploy AMD confluentinc/cp-enterprise-replicator-executable ubi8
@@ -197,7 +197,7 @@ blocks:
   - name: Deploy ARM confluentinc/cp-enterprise-replicator
     dependencies: ["Build & Test ARM"]
     run:
-      when: "branch = 'master' or branch =~ '[0-9]+\\.[0-9]+\\.[0-9]+'"
+      when: "branch = 'master' or branch =~ '^[0-9]+\\.[0-9]+\\.x$' or branch =~ '^[0-9]+\\.[0-9]+\\.[0-9]+(-cp[0-9]+)?-rc[0-9]+$'"
     task:
       agent:
         machine:
@@ -224,7 +224,7 @@ blocks:
   - name: Deploy ARM confluentinc/cp-enterprise-replicator-executable
     dependencies: ["Build & Test ARM"]
     run:
-      when: "branch = 'master' or branch =~ '[0-9]+\\.[0-9]+\\.[0-9]+'"
+      when: "branch = 'master' or branch =~ '^[0-9]+\\.[0-9]+\\.x$' or branch =~ '^[0-9]+\\.[0-9]+\\.[0-9]+(-cp[0-9]+)?-rc[0-9]+$'"
     task:
       agent:
         machine:
@@ -251,7 +251,7 @@ blocks:
   - name: Create Manifest and Maven Deploy
     dependencies: ["Deploy AMD confluentinc/cp-enterprise-replicator", "Deploy AMD confluentinc/cp-enterprise-replicator-executable", "Deploy ARM confluentinc/cp-enterprise-replicator", "Deploy ARM confluentinc/cp-enterprise-replicator-executable"]
     run:
-      when: "branch = 'master' or branch =~ '[0-9]+\\.[0-9]+\\.[0-9]+'"
+      when: "branch = 'master' or branch =~ '^[0-9]+\\.[0-9]+\\.x$' or branch =~ '^[0-9]+\\.[0-9]+\\.[0-9]+(-cp[0-9]+)?-rc[0-9]+$'"
     task:
       jobs:
         - name: Create Manifest and Maven Deploy
