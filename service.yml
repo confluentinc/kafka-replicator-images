@@ -60,3 +60,7 @@ semaphore:
             options:
               - 'deb'
               - 'ubi'
+code_artifact:
+  enable: true
+  package_paths:
+    - maven-snapshots/maven/io.confluent.kafka-replicator-images/kafka-replicator-images-parent
