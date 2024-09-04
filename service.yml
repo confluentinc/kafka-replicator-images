@@ -65,3 +65,4 @@ code_artifact:
   package_paths:
     - maven-snapshots/maven/io.confluent.kafka-connect-images/kafka-replicator-images-parent
     - maven-snapshots/maven/io.confluent.kafka-connect-images/cp-enterprise-replicator
+    - maven-snapshots/maven/io.confluent.kafka-connect-images/cp-enterprise-replicator-executable
