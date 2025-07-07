@@ -48,10 +48,10 @@ baseurl=${CONFLUENT_PACKAGES_REPO}/ \n\
 gpgcheck=1 \n\
 gpgkey=${CONFLUENT_PACKAGES_REPO}/archive.key \n\
 enabled=1 " > /etc/yum.repos.d/confluent.repo \
-    && yum install -y \
+    && microdnf install -y \
         confluent-kafka-connect-replicator-${CONFLUENT_VERSION} \
     && echo "===> Cleaning up ..."  \
-    && yum clean all \
+    && microdnf clean all \
     && rm -rf /tmp/* /etc/yum.repos.d/confluent.repo
 
 COPY --chown=appuser:appuser include/etc/confluent/docker /etc/confluent/docker
