@@ -16,7 +16,7 @@
 
 . /etc/confluent/docker/bash-config
 
-dub path /etc/"${COMPONENT}"/ writable
+ub path /etc/"${COMPONENT}"/ writable
 
 # replicator script expects the log4j config at /etc/kafka-connect-replicator/replicator-log4j.properties
-dub template "/etc/confluent/docker/log4j.properties.template" "/etc/kafka-connect-replicator/replicator-log4j.properties"
+ub render-template "/etc/confluent/docker/log4j.properties.template" > "/etc/kafka-connect-replicator/replicator-log4j.properties"
