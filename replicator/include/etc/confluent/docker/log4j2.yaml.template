@@ -1,0 +1,31 @@
+Configuration:
+  name: "Log4j2"
+
+  Appenders:
+    Console:
+      name: STDOUT
+      target: SYSTEM_OUT
+      PatternLayout:
+        Pattern: "{{ getEnv \"CONNECT_LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN\" \"[%d] %p %m (%c)%n\" }}"
+
+  Loggers:
+    Root:
+      level: {{ getEnv "CONNECT_LOG4J_ROOT_LOGLEVEL" "INFO" }}
+      AppenderRef:
+        - ref: STDOUT
+
+    Logger:
+    {{- if getEnv "CONNECT_LOG4J_LOGGERS" "" }}
+    {{- $loggers := getEnv "CONNECT_LOG4J_LOGGERS" "" -}}
+    {{- range $logger, $loglevel := splitToMapDefaults ","  "" $loggers}}
+      - name: "{{ $logger }}"
+        level: "{{ $loglevel }}"
+        AppenderRef:
+          ref: STDOUT
+    {{- end }}
+    {{- else }}
+      - name: "org.reflections"
+        level: "ERROR"
+        AppenderRef:
+          ref: STDOUT
+    {{- end }} 
