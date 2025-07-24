@@ -28,4 +28,4 @@ Configuration:
         level: "ERROR"
         AppenderRef:
           ref: STDOUT
-    {{- end }} 
+    {{- end }}
