@@ -6,7 +6,7 @@ Configuration:
       name: STDOUT
       target: SYSTEM_OUT
       PatternLayout:
-        Pattern: "{{ getEnv "CONNECT_LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN" `[%d] %p %m (%c)%n` }}"
+        Pattern: "{{ getEnv "CONNECT_LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN" "[%d] %p %m (%c)%n" }}"
 
   Loggers:
     Root:
