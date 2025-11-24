@@ -30,7 +30,7 @@
     <packaging>pom</packaging>
     <name>Kafka Replicator Docker Images</name>
     <description>Build files for Confluent's Kafka Replicator Docker images</description>
-    <version>8.0.2-cp2</version>
+    <version>8.0.2-5</version>
 
     <modules>
         <module>replicator</module>
@@ -39,6 +39,6 @@
    
     <properties>
         <component.name>kafka-replicator</component.name>
-        <io.confluent.kafka-replicator-images.version>8.0.2-cp2</io.confluent.kafka-replicator-images.version>
+        <io.confluent.kafka-replicator-images.version>8.0.2-5</io.confluent.kafka-replicator-images.version>
     </properties>
 </project>
