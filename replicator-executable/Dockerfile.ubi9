@@ -39,12 +39,13 @@ ENV COMPONENT=replicator
 
 VOLUME ["/etc/${COMPONENT}/secrets"]
 
-COPY --chown=appuser:appuser include/etc/confluent/docker /etc/confluent/docker
+COPY include/etc/confluent/docker/ /etc/confluent/docker/
 
 USER root
 
-RUN chown appuser:appuser -R /etc/replicator /etc/kafka-connect-replicator
+RUN chown -R ${APP_UID}:${APP_GID} /etc/confluent/docker \
+    && chown -R ${APP_UID}:${APP_GID} /etc/replicator /etc/kafka-connect-replicator
 
-USER appuser
+USER ${APP_UID}
 
 CMD ["/etc/confluent/docker/run"]
