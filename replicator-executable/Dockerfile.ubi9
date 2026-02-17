@@ -39,7 +39,7 @@ ENV COMPONENT=replicator
 
 VOLUME ["/etc/${COMPONENT}/secrets"]
 
-COPY include/etc/confluent/docker /etc/confluent/docker
+COPY include/etc/confluent/docker/ /etc/confluent/docker/
 
 USER root
 
