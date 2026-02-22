@@ -81,14 +81,12 @@ ARG CONFLUENT_VERSION
 
 USER root
 
-# Consolidate COPY --from=builder into a single layer to reduce image layer count.
+# Consolidate /usr/bin/ COPYs into a single layer to reduce image layer count.
 # RedHat certification check "LayerCountAcceptable" requires < 40 layers.
-RUN --mount=type=bind,from=builder,source=/microdir,target=/mnt/builder \
-    cp -a /mnt/builder/usr/bin/replicator /usr/bin/ && \
-    cp -a /mnt/builder/usr/bin/replicator-verifier /usr/bin/ && \
-    cp -a /mnt/builder/usr/share/java /usr/share/ && \
-    cp -a /mnt/builder/usr/share/doc /usr/share/ && \
-    cp -a /mnt/builder/etc/kafka-connect-replicator /etc/
+COPY --from=builder /microdir/usr/bin/replicator /microdir/usr/bin/replicator-verifier /usr/bin/
+COPY --from=builder /microdir/usr/share/java /usr/share/java
+COPY --from=builder /microdir/usr/share/doc /usr/share/doc
+COPY --from=builder /microdir/etc/kafka-connect-replicator /etc/kafka-connect-replicator
 
 COPY --chown=${APP_UID}:${APP_GID} include/etc/confluent/docker/ /etc/confluent/docker/
 
