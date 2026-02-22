@@ -88,7 +88,8 @@ COPY --from=builder /microdir/usr/share/java /usr/share/java
 COPY --from=builder /microdir/usr/share/doc /usr/share/doc
 COPY --from=builder /microdir/etc/kafka-connect-replicator /etc/kafka-connect-replicator
 
-COPY --chown=${APP_UID}:${APP_GID} include/etc/confluent/docker/ /etc/confluent/docker/
+COPY include/etc/confluent/docker/ /etc/confluent/docker/
+RUN chown -R ${APP_UID}:${APP_GID} /etc/confluent/docker
 
 USER ${APP_UID}
 
