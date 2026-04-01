@@ -1,2 +1,4 @@
 # default owner
 * @confluentinc/kafka-global
+.semaphore/	@confluentinc/kafka-global @confluentinc/cp-build-and-release-team
+service.yml	@confluentinc/kafka-global @confluentinc/cp-build-and-release-team
