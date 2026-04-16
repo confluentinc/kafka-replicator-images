@@ -76,6 +76,9 @@ semaphore:
             options:
               - 'True'
               - 'False'
+cp_dockerfile:
+  s390x_docker_repos: ['confluentinc/cp-enterprise-replicator', 'confluentinc/cp-enterprise-replicator-executable']
+  s390x_maven_modules: ['replicator', 'replicator-executable']
 code_artifact:
   enable: true
   package_paths:
