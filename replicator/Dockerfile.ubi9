@@ -17,8 +17,8 @@ ARG DOCKER_UPSTREAM_REGISTRY
 ARG DOCKER_UPSTREAM_TAG=ubi9-latest
 ARG UBI9_VERSION
 
-# Stage 1: Get package_dedupe tool from cp-server-connect-base
-FROM ${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-server-connect-base:${DOCKER_UPSTREAM_TAG} AS tools
+# Stage 1: Get package_dedupe tool from cp-server-connect
+FROM ${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-server-connect:${DOCKER_UPSTREAM_TAG} AS tools
 
 # Stage 2: Install packages using ubi9 with dnf to /microdir
 FROM registry.access.redhat.com/ubi9:${UBI9_VERSION} AS builder
@@ -57,8 +57,8 @@ RUN echo "===> Installing packages to /microdir with dnf" \
              /microdir/etc/subuid /microdir/etc/subgid \
     && rm -rf /microdir/dev/* /microdir/proc/* /microdir/sys/*
 
-# Stage 3: Final image inheriting from cp-server-connect-base
-FROM ${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-server-connect-base:${DOCKER_UPSTREAM_TAG}
+# Stage 3: Final image inheriting from cp-server-connect
+FROM ${DOCKER_UPSTREAM_REGISTRY}confluentinc/cp-server-connect:${DOCKER_UPSTREAM_TAG}
 
 ARG PROJECT_VERSION
 ARG ARTIFACT_ID
