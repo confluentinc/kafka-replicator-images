@@ -91,7 +91,7 @@ global_job_config:
       # build against kafka-images's 8.4-jmx-test-v2 dev image (cp-server-connect)
       # instead of prod - this repo's Dockerfile depends on kafka-images, not common-docker.
       - export DOCKER_UPSTREAM_REGISTRY=$DOCKER_DEV_REGISTRY
-      - export LATEST_TAG="dev-8.4-jmx-test-v2-$PACKAGING_BUILD_NUMBER"
+      - export LATEST_TAG="8.4.0-8.4-jmx-test-v2-$PACKAGING_BUILD_NUMBER"
       - export DOCKER_UPSTREAM_TAG="$LATEST_TAG"
       - export DOCKER_REPOS="confluentinc/cp-enterprise-replicator confluentinc/cp-enterprise-replicator-executable"
       - export COMMUNITY_DOCKER_REPOS=""
@@ -114,7 +114,7 @@ global_job_config:
         fi
       # POC-only (CPBR-3841): use PACKAGING_BUILD_NUMBER instead of this run's own
       # BUILD_NUMBER, so the dev tag is deterministic.
-      - export DOCKER_DEV_TAG="dev-$BRANCH_TAG-$PACKAGING_BUILD_NUMBER"
+      - export DOCKER_DEV_TAG="8.4.0-$BRANCH_TAG-$PACKAGING_BUILD_NUMBER"
       - export AMD_ARCH=.amd64
       - export ARM_ARCH=.arm64
 blocks:
